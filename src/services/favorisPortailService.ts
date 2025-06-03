@@ -19,7 +19,7 @@ import { instance } from '../utils/axiosUtils'
 
 const urlSwagger: string = import.meta.env.VITE_PORTAL_FAVORITES_URI
 
-async function _fetchFavorisPortail(): Promise<Array<Item>> {
+async function getFavorisPortail(): Promise<Array<Item>> {
   const response = await getFavorites()
   const portletsFromJson: Map<string, object> = new Map()
   for (let categoryIndex = 0; categoryIndex < response.data.registry.categories.length; categoryIndex++) {
@@ -49,5 +49,5 @@ async function getFavorites() {
 }
 
 export {
-  _fetchFavorisPortail,
+  getFavorisPortail,
 }

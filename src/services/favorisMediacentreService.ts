@@ -28,7 +28,7 @@ const groupArrayFiltered: Array<string> = []
 let soffit: string = ''
 const urlSoffit: string = import.meta.env.VITE_APP_MEDIACENTRE_USER_INFO_API_URI
 
-async function _fetchRessourcesFavorites(): Promise<Array<Item>> {
+async function getFavorisMediacentre(): Promise<Array<Item>> {
   const itemArrayResponse: Array<Item> = []
   soffit = await getToken(urlSoffit)
 
@@ -126,5 +126,5 @@ async function getGroups(groupsApiUrl: string) {
 }
 
 export {
-  _fetchRessourcesFavorites,
+  getFavorisMediacentre,
 }

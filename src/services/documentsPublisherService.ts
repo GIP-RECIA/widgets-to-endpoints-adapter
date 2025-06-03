@@ -21,7 +21,7 @@ import { getToken } from '../utils/soffitUtils'
 const url: string = import.meta.env.VITE_PUBLISHER_RESOURCES_URI
 let soffit: string = ''
 
-async function _fetchDocumentsPublisher(): Promise<Array<Item>> {
+async function getDocumentsPublisher(): Promise<Array<Item>> {
   const itemArrayResponse: Array<Item> = []
 
   const userInfoApiUrl: string = import.meta.env.VITE_APP_MEDIACENTRE_USER_INFO_API_URI
@@ -43,5 +43,5 @@ async function getDocuments() {
 }
 
 export {
-  _fetchDocumentsPublisher,
+  getDocumentsPublisher,
 }
