@@ -6552,9 +6552,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"widget-to-endpoint-adapter@workspace:.":
+"widgets-to-endpoints-adapter@workspace:.":
   version: 0.0.0-use.local
-  resolution: "widget-to-endpoint-adapter@workspace:."
+  resolution: "widgets-to-endpoints-adapter@workspace:."
   dependencies:
     "@antfu/eslint-config": "npm:^4.13.1"
     "@commitlint/cli": "npm:^19.8.1"
