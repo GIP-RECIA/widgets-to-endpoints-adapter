@@ -21,7 +21,7 @@ import { Item } from '../classes/Item'
 import { instance } from '../utils/axiosUtils'
 import { getToken } from '../utils/soffitUtils'
 
-const url: string = import.meta.env.VITE_MEDIACENTRE_FAVORITES_URI
+const url: string = import.meta.env.VITE_MEDIACENTRE_API_FAVORITES_URI
 const regExpArray: Array<RegExp> = []
 let groupArrayRaw: Array<string> = []
 const groupArrayFiltered: Array<string> = []
@@ -34,9 +34,9 @@ async function getFavorisMediacentre(): Promise<Array<Item>> {
 
   const linkPattern: string = import.meta.env.VITE_REDIRECT_PATTERN
 
-  await getGroups(import.meta.env.VITE_APP_MEDIACENTRE_USER_RIGHTS_API_URI)
+  await getGroups(import.meta.env.VITE_MEDIACENTRE_USER_RIGHTS_API_URI)
 
-  await getConfig(import.meta.env.VITE_MEDIACENTRE_CONFIG_URI)
+  await getConfig(import.meta.env.VITE_MEDIACENTRE_API_CONFIG_URI)
 
   for (const group of groupArrayRaw) {
     for (const regex of regExpArray) {
@@ -46,7 +46,7 @@ async function getFavorisMediacentre(): Promise<Array<Item>> {
     }
   }
 
-  const favorites: Array<string> = await getFavoritesFromPortal(import.meta.env.VITE_GET_USER_FAVORITE_RESOURCES_API_URI, import.meta.env.VITE_APP_MEDIACENTRE_FNAME)
+  const favorites: Array<string> = await getFavoritesFromPortal(import.meta.env.VITE_GET_USER_FAVORITE_RESOURCES_API_URI, import.meta.env.VITE_MEDIACENTRE_FNAME)
 
   if (favorites === undefined || favorites.length === 0) {
     return itemArrayResponse
