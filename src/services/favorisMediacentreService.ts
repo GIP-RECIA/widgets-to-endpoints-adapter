@@ -19,24 +19,20 @@ import type { KeyValuePair } from '../types/KeyValuePair'
 import { CustomError } from '../classes/CustomError'
 import { Item } from '../classes/Item'
 import { instance } from '../utils/axiosUtils'
-import { getToken } from '../utils/soffitUtils'
 
 const url: string = import.meta.env.VITE_MEDIACENTRE_API_FAVORITES_URI
 const regExpArray: Array<RegExp> = []
 let groupArrayRaw: Array<string> = []
 const groupArrayFiltered: Array<string> = []
-let soffit: string = ''
-const urlSoffit: string = import.meta.env.VITE_APP_MEDIACENTRE_USER_INFO_API_URI
 
-async function getFavorisMediacentre(): Promise<Array<Item>> {
+async function getFavorisMediacentre(soffit: string): Promise<string> {
   const itemArrayResponse: Array<Item> = []
-  soffit = await getToken(urlSoffit)
 
   const linkPattern: string = import.meta.env.VITE_REDIRECT_PATTERN
 
-  await getGroups(import.meta.env.VITE_MEDIACENTRE_USER_RIGHTS_API_URI)
+  await getGroups(import.meta.env.VITE_MEDIACENTRE_USER_RIGHTS_API_URI, soffit)
 
-  await getConfig(import.meta.env.VITE_MEDIACENTRE_API_CONFIG_URI)
+  await getConfig(import.meta.env.VITE_MEDIACENTRE_API_CONFIG_URI, soffit)
 
   for (const group of groupArrayRaw) {
     for (const regex of regExpArray) {
@@ -49,10 +45,10 @@ async function getFavorisMediacentre(): Promise<Array<Item>> {
   const favorites: Array<string> = await getFavoritesFromPortal(import.meta.env.VITE_GET_USER_FAVORITE_RESOURCES_API_URI, import.meta.env.VITE_MEDIACENTRE_FNAME)
 
   if (favorites === undefined || favorites.length === 0) {
-    return itemArrayResponse
+    return JSON.stringify(itemArrayResponse)
   }
 
-  const response: AxiosResponse<any, any> = await getFavorites(favorites)
+  const response: AxiosResponse<any, any> = await getFavorites(favorites, soffit)
 
   if (Array.isArray(response.data)) {
     for (let index = 0; index < response.data.length; index++) {
@@ -67,10 +63,10 @@ async function getFavorisMediacentre(): Promise<Array<Item>> {
       }
     }
   }
-  return itemArrayResponse
+  return JSON.stringify(itemArrayResponse)
 }
 
-async function getFavorites(favorites: Array<string>) {
+async function getFavorites(favorites: Array<string>, soffit: string) {
   return await instance.post(url, { isMemberOf: groupArrayFiltered, favorites }, { headers: { Authorization: `Bearer ${soffit}` } })
 }
 
@@ -88,7 +84,7 @@ async function getFavoritesFromPortal(getUserFavoriteResourcesUrl: string, fname
   }
 }
 
-async function getConfig(configApiUrl: string) {
+async function getConfig(configApiUrl: string, soffit: string) {
   try {
     const response = await instance.post(configApiUrl, { uais: [] }, { headers: { Authorization: `Bearer ${soffit}` } })
     const groups: Map<string, KeyValuePair<string>> = response.data.configListMap.groups
@@ -106,7 +102,7 @@ async function getConfig(configApiUrl: string) {
   }
 }
 
-async function getGroups(groupsApiUrl: string) {
+async function getGroups(groupsApiUrl: string, soffit: string) {
   try {
     const response = await instance.get(groupsApiUrl, { headers: { Authorization: `Bearer ${soffit}` } })
     const groups: Array<string> = response.data.groups.map(x => x.name)

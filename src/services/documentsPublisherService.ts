@@ -16,29 +16,23 @@
 
 import { Item } from '../classes/Item'
 import { instance } from '../utils/axiosUtils'
-import { getToken } from '../utils/soffitUtils'
 
 const url: string = import.meta.env.VITE_PUBLISHER_RESOURCES_URI
-let soffit: string = ''
 
-async function getDocumentsPublisher(): Promise<Array<Item>> {
+async function getDocumentsPublisher(soffit: string): Promise<string> {
   const itemArrayResponse: Array<Item> = []
 
-  const userInfoApiUrl: string = import.meta.env.VITE_APP_MEDIACENTRE_USER_INFO_API_URI
-
-  soffit = await getToken(userInfoApiUrl)
-
-  const response = await getDocuments()
+  const response = await getDocuments(soffit)
 
   for (let index = 0; index < response.data.length; index++) {
     const element = response.data[index]
     const item: Item = new Item(element.article.title, element.article.files[0].uri)
     itemArrayResponse.push(item)
   }
-  return itemArrayResponse
+  return JSON.stringify(itemArrayResponse)
 }
 
-async function getDocuments() {
+async function getDocuments(soffit: string) {
   return await instance.get(url, { headers: { Authorization: `Bearer ${soffit}` } })
 }
 
