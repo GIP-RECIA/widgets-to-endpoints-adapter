@@ -52,7 +52,7 @@ function getUrl(portlet: any): string {
   // TODO : put '/p/' in conf
   return portlet?.parameters?.alternativeMaximizedLink?.value
     ? portlet.parameters.alternativeMaximizedLink.value
-    : `/p/${portlet.fname}`
+    : `/portail/p/${portlet.fname}`
 }
 
 function getTarget(portlet: any): string {
