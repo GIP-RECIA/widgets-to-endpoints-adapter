@@ -1,10 +1,4 @@
-import { getDocumentsPublisher } from './src/services/documentsPublisherService'
-import { getFavorisMediacentre } from './src/services/favorisMediacentreService'
-import { getFavorisPortail } from './src/services/favorisPortailService'
+import { WidgetAdapter } from './src/classes/WidgetAdapter'
 import 'regenerator-runtime/runtime.js'
 
-export {
-  getDocumentsPublisher,
-  getFavorisMediacentre,
-  getFavorisPortail,
-}
+window.WidgetAdapter = new WidgetAdapter()
