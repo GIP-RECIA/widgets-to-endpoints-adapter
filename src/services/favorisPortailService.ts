@@ -36,7 +36,7 @@ async function getFavorisPortail(): Promise<string> {
   const ItemArray: Array<Item> = []
 
   function populateItemArray(value, _key, _map) {
-    const favoriteAsItem: Item = new Item(value.title, `/portail/p/${value.fname}`, value.parameters.iconUrl.value)
+    const favoriteAsItem: Item = new Item(value.title, getUrl(value), value.parameters.iconUrl.value, getTarget(value), getRel(value))
     ItemArray.push(favoriteAsItem)
   }
 
@@ -46,6 +46,38 @@ async function getFavorisPortail(): Promise<string> {
 
 async function getFavorites() {
   return await instance.get(urlSwagger)
+}
+
+function getUrl(portlet: any): string {
+  // TODO : put '/p/' in conf
+  return portlet?.parameters?.alternativeMaximizedLink?.value
+    ? portlet.parameters.alternativeMaximizedLink.value
+    : `/p/${portlet.fname}`
+}
+
+function getTarget(portlet: any): string {
+  if (getAlternativeMaximizedUrl(portlet)) {
+    return getAlternativeMaximizedTarget(portlet)
+  }
+  return '_self'
+}
+
+function getRel(portlet: any): string {
+  return hasAlternativeMaximizedUrl(portlet)
+    ? 'noopener noreferrer'
+    : ''
+}
+
+function hasAlternativeMaximizedUrl(portlet: any): string {
+  return getAlternativeMaximizedUrl(portlet)
+}
+
+function getAlternativeMaximizedTarget(portlet: any): string {
+  return portlet?.parameters?.alternativeMaximizedLinkTarget?.value ?? '_blank'
+}
+
+function getAlternativeMaximizedUrl(portlet: any): string {
+  return portlet?.parameters?.alternativeMaximizedLink?.value
 }
 
 export {
