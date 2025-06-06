@@ -22,6 +22,6 @@ export class Item {
   constructor(name: string, link: string, icon?: string) {
     this.name = name
     this.link = link
-    this.icon = icon ? `<svg class=\"icon\" aria-hidden=\"true\"><use xlink:href=\"${icon}\"></use></svg>` : undefined
+    this.icon = icon
   }
 }
