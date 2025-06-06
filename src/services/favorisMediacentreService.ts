@@ -16,6 +16,8 @@
 
 import type { AxiosResponse } from 'axios'
 import type { KeyValuePair } from '../types/KeyValuePair'
+// eslint-disable-next-line unicorn/prefer-node-protocol
+import { Buffer } from 'buffer'
 import { CustomError } from '../classes/CustomError'
 import { Item } from '../classes/Item'
 import { instance } from '../utils/axiosUtils'
@@ -55,7 +57,12 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
       const element = response.data[index]
 
       try {
-        const ressourceLightAsItem: Item = new Item(element.nomRessource, linkPattern.replace('{fname}', element.idRessource).replace('{name}', element.nomRessource), undefined)
+        const displayName: string = element.nomRessource
+        const regex = /[^A-Z1-9]+/i
+        const hasSpecialChar: boolean = displayName.match(regex) != null
+        const displayNameForRedirection: string = hasSpecialChar ? Buffer.from(displayName).toString('base64') : displayName
+
+        const ressourceLightAsItem: Item = new Item(element.nomRessource, linkPattern.replace('{fname}', element.idRessource).replace('{name}', displayNameForRedirection).replace('{b64}', hasSpecialChar.toString()), undefined)
         itemArrayResponse.push(ressourceLightAsItem)
       }
       catch (error) {
