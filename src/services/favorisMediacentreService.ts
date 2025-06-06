@@ -62,7 +62,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
         const hasSpecialChar: boolean = displayName.match(regex) != null
         const displayNameForRedirection: string = hasSpecialChar ? Buffer.from(displayName).toString('base64') : displayName
 
-        const ressourceLightAsItem: Item = new Item(element.nomRessource, linkPattern.replace('{fname}', element.idRessource).replace('{name}', displayNameForRedirection).replace('{b64}', hasSpecialChar.toString()), undefined)
+        const ressourceLightAsItem: Item = new Item(element.nomRessource, linkPattern.replace('{fname}', element.idRessource).replace('{name}', displayNameForRedirection).replace('{b64}', hasSpecialChar.toString()), undefined, '_blank', 'noopener noreferrer')
         itemArrayResponse.push(ressourceLightAsItem)
       }
       catch (error) {
