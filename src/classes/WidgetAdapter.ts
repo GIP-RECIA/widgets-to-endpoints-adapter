@@ -17,14 +17,56 @@
 import { getDocumentsPublisher } from '../services/documentsPublisherService'
 import { getFavorisMediacentre } from '../services/favorisMediacentreService'
 import { getFavorisPortail } from '../services/favorisPortailService'
+import portletFromApiService from '../services/utils/portletFromApiService'
 import { WidgetKeyEnum } from '../WidgetKeyEnum'
+import { WidgetData } from './WidgetData'
 
 export class WidgetAdapter {
   getKeys = () => {
     return Object.values(WidgetKeyEnum) as string[]
   }
 
-  getJsonForWidget = (key: string, soffit: string) => {
+  getJsonForWidget = async (key: string, soffit: string) => {
+    const items: string = await this.getItems(key, soffit)
+    const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(key)
+    const textEmpty: string = this.getTextEmpty(key)
+    const widgetData: WidgetData = new WidgetData(portletData.name, '', portletData.link, textEmpty, false, items, portletData.target, portletData.rel)
+    return JSON.stringify(widgetData)
+  }
+
+  getTextEmpty(key: string): string {
+    switch (key) {
+      case WidgetKeyEnum.FAVORIS_PORTAIL:
+        return 'aucun favori'
+      case WidgetKeyEnum.DOCUMENTS_PUBLISHER:
+        return 'aucun document'
+      case WidgetKeyEnum.FAVORIS_MEDIACENTRE:
+        return 'aucune ressource favorite'
+      default:
+        return key
+    }
+  }
+
+  async getLink(key: string): Promise<{ name: string, link: string, target: string, rel: string }> {
+    if (key === WidgetKeyEnum.FAVORIS_PORTAIL) {
+      return { name: 'Favoris', link: '', rel: '', target: '' }
+    }
+    const url = import.meta.env.VITE_PORTAL_PORTLET_INFO.replace('{fname}', key)
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`)
+      }
+      const json = await response.json()
+      return { name: json.portlet.title ?? key, link: portletFromApiService.getUrl(json.portlet), target: portletFromApiService.getTarget(json.portlet), rel: portletFromApiService.getRel(json.portlet) }
+    }
+    catch (error: any) {
+      console.error(error.message)
+      return { name: key, link: '', rel: '', target: '' }
+    }
+  }
+
+  getItems = (key: string, soffit: string) => {
     switch (key) {
       case WidgetKeyEnum.DOCUMENTS_PUBLISHER:
         return getDocumentsPublisher(soffit)
@@ -33,7 +75,7 @@ export class WidgetAdapter {
       case WidgetKeyEnum.FAVORIS_PORTAIL:
         return getFavorisPortail()
       default:
-        return undefined
+        return ''
     }
   }
 }
