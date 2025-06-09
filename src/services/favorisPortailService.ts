@@ -36,7 +36,7 @@ async function getFavorisPortail(): Promise<string> {
   const ItemArray: Array<Item> = []
 
   function populateItemArray(value, _key, _map) {
-    const favoriteAsItem: Item = new Item(value.title, getUrl(value), value.parameters.iconUrl.value, getTarget(value), getRel(value))
+    const favoriteAsItem: Item = new Item(value.title, getUrl(value), import.meta.env.VITE_PORTAL_ICON_TAG.replace('{icon}', value.parameters.iconUrl.value), getTarget(value), getRel(value))
     ItemArray.push(favoriteAsItem)
   }
 
