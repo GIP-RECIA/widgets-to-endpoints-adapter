@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-export class Item {
+export interface Item {
   name: string
-  icon?: string
+  icon: string
   link: string
-  target?: string
-  rel?: string
-
-  constructor(name: string, link: string, icon?: string, target?: string, rel?: string) {
-    this.name = name
-    this.link = link
-    this.icon = icon
-    this.target = target
-    this.rel = rel
-  }
+  target: string
+  rel: string
 }
