@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Item } from '../classes/Item'
+import type { Item } from '../types/Item'
 import { instance } from '../utils/axiosUtils'
 
 const urlSwagger: string = import.meta.env.VITE_PORTAL_FAVORITES_URI
@@ -36,7 +36,13 @@ async function getFavorisPortail(): Promise<string> {
   const ItemArray: Array<Item> = []
 
   function populateItemArray(value, _key, _map) {
-    const favoriteAsItem: Item = new Item(value.title, getUrl(value), import.meta.env.VITE_PORTAL_ICON_TAG.replace('{icon}', value.parameters.iconUrl.value), getTarget(value), getRel(value))
+    const favoriteAsItem: Item = {
+      name: value.title,
+      link: getUrl(value),
+      icon: import.meta.env.VITE_PORTAL_ICON_TAG.replace('{icon}', value.parameters.iconUrl.value),
+      target: getTarget(value),
+      rel: getRel(value),
+    }
     ItemArray.push(favoriteAsItem)
   }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Item } from '../classes/Item'
+import type { Item } from '../types/Item'
 import { instance } from '../utils/axiosUtils'
 
 const url: string = import.meta.env.VITE_PUBLISHER_RESOURCES_URI
@@ -26,7 +26,13 @@ async function getDocumentsPublisher(soffit: string): Promise<string> {
 
   for (let index = 0; index < response.data.length; index++) {
     const element = response.data[index]
-    const item: Item = new Item(element.article.title, element.article.files[0].uri)
+    const item: Item = {
+      name: element.article.title,
+      link: '',
+      target: '',
+      rel: '',
+      icon: '',
+    }
     itemArrayResponse.push(item)
   }
   return JSON.stringify(itemArrayResponse)

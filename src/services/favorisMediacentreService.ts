@@ -15,11 +15,11 @@
  */
 
 import type { AxiosResponse } from 'axios'
+import type { Item } from '../types/Item'
 import type { KeyValuePair } from '../types/KeyValuePair'
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { Buffer } from 'buffer'
 import { CustomError } from '../classes/CustomError'
-import { Item } from '../classes/Item'
 import { instance } from '../utils/axiosUtils'
 
 const url: string = import.meta.env.VITE_MEDIACENTRE_API_FAVORITES_URI
@@ -62,7 +62,13 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
         const hasSpecialChar: boolean = displayName.match(regex) != null
         const displayNameForRedirection: string = hasSpecialChar ? Buffer.from(displayName).toString('base64') : displayName
 
-        const ressourceLightAsItem: Item = new Item(element.nomRessource, linkPattern.replace('{fname}', element.idRessource).replace('{name}', displayNameForRedirection).replace('{b64}', hasSpecialChar.toString()), undefined, '_blank', 'noopener noreferrer')
+        const ressourceLightAsItem: Item = {
+          name: element.nomRessource,
+          link: linkPattern.replace('{fname}', element.idRessource).replace('{name}', displayNameForRedirection).replace('{b64}', hasSpecialChar.toString()),
+          icon: '',
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        }
         itemArrayResponse.push(ressourceLightAsItem)
       }
       catch (error) {
