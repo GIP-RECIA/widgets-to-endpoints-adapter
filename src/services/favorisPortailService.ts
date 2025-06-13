@@ -42,6 +42,8 @@ async function getFavorisPortail(): Promise<string> {
       icon: import.meta.env.VITE_PORTAL_ICON_TAG.replace('{icon}', value.parameters.iconUrl.value),
       target: getTarget(value),
       rel: getRel(value),
+      event: '',
+      eventpayload: '',
     }
     ItemArray.push(favoriteAsItem)
   }

@@ -20,4 +20,6 @@ export interface Item {
   link: string
   target: string
   rel: string
+  event: string
+  eventpayload: string
 }
