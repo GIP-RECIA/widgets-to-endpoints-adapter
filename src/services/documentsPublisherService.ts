@@ -32,6 +32,8 @@ async function getDocumentsPublisher(soffit: string): Promise<string> {
       target: '',
       rel: '',
       icon: '',
+      event: import.meta.env.VITE_PUBLISHER_EVENT_NAME ?? '',
+      eventpayload: JSON.stringify({ uuid: element.uuid ?? '' }),
     }
     itemArrayResponse.push(item)
   }

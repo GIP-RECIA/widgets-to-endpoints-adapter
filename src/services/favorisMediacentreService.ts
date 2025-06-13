@@ -68,6 +68,8 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
           icon: '',
           target: '_blank',
           rel: 'noopener noreferrer',
+          event: '',
+          eventpayload: '',
         }
         itemArrayResponse.push(ressourceLightAsItem)
       }
