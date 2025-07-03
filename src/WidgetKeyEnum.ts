@@ -17,7 +17,7 @@
 export enum WidgetKeyEnum {
   FAVORIS_PORTAIL = 'Favoris',
   FAVORIS_MEDIACENTRE = 'Mediacentre',
-  DOCUMENTS_PUBLISHER = 'DocumentsEtab',
+  DOCUMENTS_PUBLISHER = 'Documents',
   REMPLISSAGE = 'Remplissage',
   MOCK = 'Mock',
 }
