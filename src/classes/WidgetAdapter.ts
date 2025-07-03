@@ -34,6 +34,16 @@ export class WidgetAdapter {
     return JSON.stringify(widgetData)
   }
 
+  getAllNames = async () => {
+    const names: Array<{ name: string, key: string }> = []
+    for (let index = 0; index < Object.values(WidgetKeyEnum).length; index++) {
+      const element = Object.values(WidgetKeyEnum)[index]
+      const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(element)
+      names.push({ name: portletData.name, key: element })
+    }
+    return names
+  }
+
   getTextEmpty(key: string): string {
     switch (key) {
       case WidgetKeyEnum.FAVORIS_PORTAIL:
