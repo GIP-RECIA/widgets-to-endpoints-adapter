@@ -19,5 +19,6 @@ export enum WidgetKeyEnum {
   FAVORIS_MEDIACENTRE = 'Mediacentre',
   DOCUMENTS_PUBLISHER = 'Documents',
   REMPLISSAGE = 'Remplissage',
+  ESIDOC_PRETS = 'MonCDI',
   MOCK = 'Mock',
 }

@@ -15,6 +15,7 @@
  */
 
 import { getDocumentsPublisher } from '../services/documentsPublisherService'
+import { getEsidoc } from '../services/esidocService'
 import { getFavorisMediacentre } from '../services/favorisMediacentreService'
 import { getFavorisPortail } from '../services/favorisPortailService'
 import portletFromApiService from '../services/utils/portletFromApiService'
@@ -84,6 +85,8 @@ export class WidgetAdapter {
         return getFavorisMediacentre(soffit)
       case WidgetKeyEnum.FAVORIS_PORTAIL:
         return getFavorisPortail()
+      case WidgetKeyEnum.ESIDOC_PRETS:
+        return getEsidoc(soffit)
       default:
         return ''
     }
