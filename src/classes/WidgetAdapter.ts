@@ -88,4 +88,8 @@ export class WidgetAdapter {
         return ''
     }
   }
+
+  getVersion = () => {
+    return APP_VERSION
+  }
 }

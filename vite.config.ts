@@ -56,6 +56,7 @@ export default ({ mode }: ConfigEnv) => {
     },
     define: {
       'process.env': { NODE_ENV: process.env.NODE_ENV },
+      'APP_VERSION': JSON.stringify(process.env.npm_package_version),
     },
   })
 }
