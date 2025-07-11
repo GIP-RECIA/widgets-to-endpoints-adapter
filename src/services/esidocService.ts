@@ -17,6 +17,7 @@
 import type { Item } from '../types/Item'
 import { CustomError } from '../classes/CustomError'
 import { instance } from '../utils/axiosUtils'
+import { WidgetKeyEnum } from '../WidgetKeyEnum'
 
 let date: Date
 let itemList: any[]
@@ -49,6 +50,8 @@ async function getEsidocItems(soffit: string): Promise<string> {
     rel: 'noopener noreferrer',
     event: 'openSearchEsidoc',
     eventpayload: '{}',
+    eventDNMA: '',
+    eventpayloadDNMA: '',
   }
   itemArrayResponse.push(buttonSearch)
   for (let index = 0; index < responseArray.length; index++) {
@@ -62,6 +65,8 @@ async function getEsidocItems(soffit: string): Promise<string> {
         rel: 'noopener noreferrer',
         event: '',
         eventpayload: '',
+        eventDNMA: 'click-portlet-card',
+        eventpayloadDNMA: JSON.stringify({ fname: WidgetKeyEnum.ESIDOC_PRETS }),
       }
       itemArrayResponse.push(ressourceLightAsItem)
     }

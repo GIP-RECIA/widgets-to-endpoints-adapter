@@ -70,6 +70,8 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
           rel: 'noopener noreferrer',
           event: '',
           eventpayload: '',
+          eventDNMA: '',
+          eventpayloadDNMA: '',
         }
         itemArrayResponse.push(ressourceLightAsItem)
       }

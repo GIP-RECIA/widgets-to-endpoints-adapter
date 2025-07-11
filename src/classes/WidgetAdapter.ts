@@ -32,7 +32,8 @@ export class WidgetAdapter {
     const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(key)
     const subtitle = await this.getSubtitle(key, soffit)
     const textEmpty: string = this.getTextEmpty(key)
-    const widgetData: WidgetData = new WidgetData(portletData.name, subtitle, portletData.link, textEmpty, false, items, portletData.target, portletData.rel)
+    const dnma: { eventDNMA: string, eventpayloadDNMA: string } = this.getDNMA(key)
+    const widgetData: WidgetData = new WidgetData(portletData.name, subtitle, portletData.link, textEmpty, false, items, portletData.target, portletData.rel, dnma.eventDNMA, dnma.eventpayloadDNMA)
     return JSON.stringify(widgetData)
   }
 
@@ -42,6 +43,15 @@ export class WidgetAdapter {
         return await getEsidocSubtitle(soffit)
       default :
         return ''
+    }
+  }
+
+  getDNMA = function (key: string): { eventDNMA: string, eventpayloadDNMA: string } {
+    switch (key) {
+      case WidgetKeyEnum.FAVORIS_PORTAIL:
+        return { eventDNMA: '', eventpayloadDNMA: '' }
+      default:
+        return { eventDNMA: 'click-portlet-card', eventpayloadDNMA: JSON.stringify({ fname: key }) }
     }
   }
 
