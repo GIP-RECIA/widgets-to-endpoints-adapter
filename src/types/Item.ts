@@ -22,4 +22,6 @@ export interface Item {
   rel: string
   event: string
   eventpayload: string
+  eventDNMA: string
+  eventpayloadDNMA: string
 }
