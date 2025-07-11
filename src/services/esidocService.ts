@@ -18,9 +18,23 @@ import type { Item } from '../types/Item'
 import { CustomError } from '../classes/CustomError'
 import { instance } from '../utils/axiosUtils'
 
-async function getEsidoc(soffit: string): Promise<string> {
-  const apiUrl: string = import.meta.env.VITE_ESIDOC_API_URL
-  const responseArray: any[] | undefined = await getEsidocInfo(apiUrl, soffit)
+let date: Date
+let itemList: any[]
+const apiUrl: string = import.meta.env.VITE_ESIDOC_API_URL
+
+async function getEsidocSubtitle(soffit: string): Promise<string> {
+  if (date === undefined) {
+    await getEsidocInfo(apiUrl, soffit)
+  }
+  return `I18N$CacheUpdate$${date.toLocaleTimeString()}`
+}
+
+async function getEsidocItems(soffit: string): Promise<string> {
+  if (itemList === undefined) {
+    await getEsidocInfo(apiUrl, soffit)
+  }
+
+  const responseArray: any[] | undefined = itemList
   if (responseArray === undefined) {
     return ''
   }
@@ -61,7 +75,10 @@ async function getEsidoc(soffit: string): Promise<string> {
 async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
   try {
     const response = await instance.get(esidocApiUrl, { headers: { Authorization: `Bearer ${soffit}` } })
-    const infoArray: any[] = response.data
+    const infoArray: any[] = response.data.itemForResponseList
+    itemList = infoArray
+    const dateFromPayload = new Date(response.data.lastUpdateInstant)
+    date = dateFromPayload
     return infoArray
   }
   catch (e: any) {
@@ -75,5 +92,6 @@ async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
 }
 
 export {
-  getEsidoc,
+  getEsidocItems,
+  getEsidocSubtitle,
 }
