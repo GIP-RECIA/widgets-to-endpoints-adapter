@@ -44,6 +44,8 @@ async function getFavorisPortail(): Promise<string> {
       rel: getRel(value),
       event: '',
       eventpayload: '',
+      eventDNMA: 'click-portlet-card',
+      eventpayloadDNMA: JSON.stringify({ fname: value.fname }),
     }
     ItemArray.push(favoriteAsItem)
   }
