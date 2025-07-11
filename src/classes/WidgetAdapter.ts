@@ -15,7 +15,7 @@
  */
 
 import { getDocumentsPublisher } from '../services/documentsPublisherService'
-import { getEsidoc } from '../services/esidocService'
+import { getEsidocItems, getEsidocSubtitle } from '../services/esidocService'
 import { getFavorisMediacentre } from '../services/favorisMediacentreService'
 import { getFavorisPortail } from '../services/favorisPortailService'
 import portletFromApiService from '../services/utils/portletFromApiService'
@@ -30,9 +30,19 @@ export class WidgetAdapter {
   getJsonForWidget = async (key: string, soffit: string) => {
     const items: string = await this.getItems(key, soffit)
     const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(key)
+    const subtitle = await this.getSubtitle(key, soffit)
     const textEmpty: string = this.getTextEmpty(key)
-    const widgetData: WidgetData = new WidgetData(portletData.name, '', portletData.link, textEmpty, false, items, portletData.target, portletData.rel)
+    const widgetData: WidgetData = new WidgetData(portletData.name, subtitle, portletData.link, textEmpty, false, items, portletData.target, portletData.rel)
     return JSON.stringify(widgetData)
+  }
+
+  getSubtitle = async function (key: string, soffit: string) {
+    switch (key) {
+      case WidgetKeyEnum.ESIDOC_PRETS:
+        return await getEsidocSubtitle(soffit)
+      default :
+        return ''
+    }
   }
 
   getAllNames = async () => {
@@ -86,7 +96,7 @@ export class WidgetAdapter {
       case WidgetKeyEnum.FAVORIS_PORTAIL:
         return getFavorisPortail()
       case WidgetKeyEnum.ESIDOC_PRETS:
-        return getEsidoc(soffit)
+        return getEsidocItems(soffit)
       default:
         return ''
     }
