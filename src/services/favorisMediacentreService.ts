@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-import type { AxiosResponse } from 'axios'
+import type { WidgetAdapter } from '../classes/WidgetAdapter'
 import type { Item } from '../types/Item'
 import type { KeyValuePair } from '../types/KeyValuePair'
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { Buffer } from 'buffer'
-import { CustomError } from '../classes/CustomError'
-import { instance } from '../utils/axiosUtils'
+
+declare global {
+  interface Window {
+    WidgetAdapter: WidgetAdapter
+  }
+}
 
 const url: string = import.meta.env.VITE_MEDIACENTRE_API_FAVORITES_URI
 const regExpArray: Array<RegExp> = []
@@ -50,11 +54,11 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
     return JSON.stringify(itemArrayResponse)
   }
 
-  const response: AxiosResponse<any, any> = await getFavorites(favorites, soffit)
+  const response = await getFavorites(favorites, soffit)
 
-  if (Array.isArray(response.data)) {
-    for (let index = 0; index < response.data.length; index++) {
-      const element = response.data[index]
+  if (Array.isArray(response)) {
+    for (let index = 0; index < response.length; index++) {
+      const element = response[index]
 
       try {
         const displayName: string = element.nomRessource
@@ -84,57 +88,89 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
 }
 
 async function getFavorites(favorites: Array<string>, soffit: string) {
-  return await instance.post(url, { isMemberOf: groupArrayFiltered, favorites }, { headers: { Authorization: `Bearer ${soffit}` } })
+  try {
+    const timeout = window.WidgetAdapter.timeout
+    const response = await fetch(url, {
+      method: 'POST',
+      signal: AbortSignal.timeout(timeout),
+      headers:
+      { 'Authorization': `Bearer ${soffit}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isMemberOf: groupArrayFiltered, favorites }),
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+    const json = await response.json()
+    return json
+  }
+  catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 async function getFavoritesFromPortal(getUserFavoriteResourcesUrl: string, fnameMediacentreUi: string) {
   try {
-    const response = await instance.get(`${getUserFavoriteResourcesUrl}${fnameMediacentreUi}`)
-    const data = response.data
-    if (Object.keys(data).length === 0) {
-      return new Array<string>()
+    const timeout = window.WidgetAdapter.timeout
+    const response = await fetch(`${getUserFavoriteResourcesUrl}${fnameMediacentreUi}`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(timeout),
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
     }
-    return response.data.mediacentreFavorites
+    const json = await response.json()
+    return json.mediacentreFavorites
   }
-  catch (e: any) {
-    throw new CustomError(e.response.data.message, e.response.status)
+  catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
 async function getConfig(configApiUrl: string, soffit: string) {
   try {
-    const response = await instance.post(configApiUrl, { uais: [] }, { headers: { Authorization: `Bearer ${soffit}` } })
-    const groups: Map<string, KeyValuePair<string>> = response.data.configListMap.groups
+    const timeout = window.WidgetAdapter.timeout
+    const response = await fetch(configApiUrl, {
+      method: 'POST',
+      signal: AbortSignal.timeout(timeout),
+      headers:
+      { 'Authorization': `Bearer ${soffit}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uais: [] }),
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+    const json = await response.json()
+    const groups: Map<string, KeyValuePair<string>> = json.configListMap.groups
     groups.forEach((value, _key, _map) => {
       regExpArray.push(new RegExp(value.value))
     })
   }
-  catch (e: any) {
-    if (e.response) {
-      throw new CustomError(e.response.data.message, e.response.status)
-    }
-    else if (e.code === 'ECONNABORTED') {
-      throw new CustomError(e.message, e.code)
-    }
+  catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
 async function getGroups(groupsApiUrl: string, soffit: string) {
   try {
-    const response = await instance.get(groupsApiUrl, { headers: { Authorization: `Bearer ${soffit}` } })
-    const groups: Array<string> = response.data.groups.map(x => x.name)
+    const timeout = window.WidgetAdapter.timeout
+    const response = await fetch(groupsApiUrl, {
+      method: 'GET',
+      signal: AbortSignal.timeout(timeout),
+      headers: { Authorization: `Bearer ${soffit}` },
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+    const json = await response.json()
+    const groups: Array<string> = json.groups.map(x => x.name)
     groupArrayRaw = groups
   }
-  catch (e: any) {
-    if (e.response) {
-      throw new CustomError(e.response.data.message, e.response.status)
-    }
-    else if (e.code === 'ECONNABORTED') {
-      throw new CustomError(e.message, e.code)
-    }
-    else {
-      throw new Error(e.response)
-    }
+  catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
