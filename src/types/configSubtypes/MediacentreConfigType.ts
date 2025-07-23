@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-export interface Item {
-  name: string
-  icon: string
-  link: string
-  target: string
-  rel: string
-  event: string
-  eventpayload: string
-  eventDNMA: string
-  eventpayloadDNMA: string
-  id: string
+export interface MediacentreConfig {
+  apiFavorisUri: string
+  apiConfigUri: string
+  redirectLinkPattern: string
+  userRigthsApiUri: string
+  userFavorisApiUri: string
 }

@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-export interface Item {
-  name: string
-  icon: string
-  link: string
-  target: string
-  rel: string
-  event: string
-  eventpayload: string
-  eventDNMA: string
-  eventpayloadDNMA: string
-  id: string
+export interface KeyENTPersonProfilsInfo {
+  ENTPersonProfils: Array<string>
+  allowedKeys: Array<string>
+  requiredKeys: Array<string>
+  defaultKeys: Array<string>
 }

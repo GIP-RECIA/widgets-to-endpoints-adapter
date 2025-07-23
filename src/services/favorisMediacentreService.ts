@@ -15,10 +15,13 @@
  */
 
 import type { WidgetAdapter } from '../classes/WidgetAdapter'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
+import type { MediacentreConfig } from '../types/configSubtypes/MediacentreConfigType'
 import type { Item } from '../types/Item'
 import type { KeyValuePair } from '../types/KeyValuePair'
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { Buffer } from 'buffer'
+import { WidgetKeyEnum } from '../WidgetKeyEnum'
 
 declare global {
   interface Window {
@@ -26,19 +29,15 @@ declare global {
   }
 }
 
-const url: string = import.meta.env.VITE_MEDIACENTRE_API_FAVORITES_URI
-const regExpArray: Array<RegExp> = []
-let groupArrayRaw: Array<string> = []
-const groupArrayFiltered: Array<string> = []
-
 async function getFavorisMediacentre(soffit: string): Promise<string> {
   const itemArrayResponse: Array<Item> = []
 
-  const linkPattern: string = import.meta.env.VITE_REDIRECT_PATTERN
+  const linkPattern: string = getConfig().mediacentre.redirectLinkPattern
+  const groupArrayFiltered: Array<string> = []
 
-  await getGroups(import.meta.env.VITE_MEDIACENTRE_USER_RIGHTS_API_URI, soffit)
+  const groupArrayRaw: Array<string> = await getGroupsFromPortail(getConfig().mediacentre.userRigthsApiUri, soffit)
 
-  await getConfig(import.meta.env.VITE_MEDIACENTRE_API_CONFIG_URI, soffit)
+  const regExpArray: Array<RegExp> = await getConfigFromMediacentre(getConfig().mediacentre.apiConfigUri, soffit)
 
   for (const group of groupArrayRaw) {
     for (const regex of regExpArray) {
@@ -48,13 +47,13 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
     }
   }
 
-  const favorites: Array<string> = await getFavoritesFromPortal(import.meta.env.VITE_GET_USER_FAVORITE_RESOURCES_API_URI, import.meta.env.VITE_MEDIACENTRE_FNAME)
+  const favorites: Array<string> = await getFavoritesFromPortail(getConfig().mediacentre.userFavorisApiUri, WidgetKeyEnum.FAVORIS_MEDIACENTRE)
 
   if (favorites === undefined || favorites.length === 0) {
     return JSON.stringify(itemArrayResponse)
   }
 
-  const response = await getFavorites(favorites, soffit)
+  const response = await getFavoritesFromMediacentre(getConfig().mediacentre.apiFavorisUri, favorites, soffit, groupArrayFiltered)
 
   if (Array.isArray(response)) {
     for (let index = 0; index < response.length; index++) {
@@ -76,6 +75,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
           eventpayload: '',
           eventDNMA: '',
           eventpayloadDNMA: '',
+          id: element.idRessource,
         }
         itemArrayResponse.push(ressourceLightAsItem)
       }
@@ -87,15 +87,15 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
   return JSON.stringify(itemArrayResponse)
 }
 
-async function getFavorites(favorites: Array<string>, soffit: string) {
+async function getFavoritesFromMediacentre(urlFavoris: string, favorites: Array<string>, soffit: string, groupArray: Array<string>) {
   try {
-    const timeout = window.WidgetAdapter.timeout
-    const response = await fetch(url, {
+    const timeout = getConfig().global.timeout
+    const response = await fetch(urlFavoris, {
       method: 'POST',
       signal: AbortSignal.timeout(timeout),
       headers:
       { 'Authorization': `Bearer ${soffit}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isMemberOf: groupArrayFiltered, favorites }),
+      body: JSON.stringify({ isMemberOf: groupArray, favorites }),
     })
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`)
@@ -109,9 +109,9 @@ async function getFavorites(favorites: Array<string>, soffit: string) {
   }
 }
 
-async function getFavoritesFromPortal(getUserFavoriteResourcesUrl: string, fnameMediacentreUi: string) {
+async function getFavoritesFromPortail(getUserFavoriteResourcesUrl: string, fnameMediacentreUi: string) {
   try {
-    const timeout = window.WidgetAdapter.timeout
+    const timeout = getConfig().global.timeout
     const response = await fetch(`${getUserFavoriteResourcesUrl}${fnameMediacentreUi}`, {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
@@ -128,9 +128,9 @@ async function getFavoritesFromPortal(getUserFavoriteResourcesUrl: string, fname
   }
 }
 
-async function getConfig(configApiUrl: string, soffit: string) {
+async function getConfigFromMediacentre(configApiUrl: string, soffit: string) {
   try {
-    const timeout = window.WidgetAdapter.timeout
+    const timeout = getConfig().global.timeout
     const response = await fetch(configApiUrl, {
       method: 'POST',
       signal: AbortSignal.timeout(timeout),
@@ -143,9 +143,11 @@ async function getConfig(configApiUrl: string, soffit: string) {
     }
     const json = await response.json()
     const groups: Map<string, KeyValuePair<string>> = json.configListMap.groups
+    const regExpArray: Array<RegExp> = []
     groups.forEach((value, _key, _map) => {
       regExpArray.push(new RegExp(value.value))
     })
+    return regExpArray
   }
   catch (error) {
     console.error(error)
@@ -153,9 +155,9 @@ async function getConfig(configApiUrl: string, soffit: string) {
   }
 }
 
-async function getGroups(groupsApiUrl: string, soffit: string) {
+async function getGroupsFromPortail(groupsApiUrl: string, soffit: string): Promise<Array<string>> {
   try {
-    const timeout = window.WidgetAdapter.timeout
+    const timeout = getConfig().global.timeout
     const response = await fetch(groupsApiUrl, {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
@@ -165,13 +167,16 @@ async function getGroups(groupsApiUrl: string, soffit: string) {
       throw new Error(`Response status: ${response.status}`)
     }
     const json = await response.json()
-    const groups: Array<string> = json.groups.map(x => x.name)
-    groupArrayRaw = groups
+    return json.groups.map((x: { name: any }) => x.name)
   }
   catch (error) {
     console.error(error)
     throw error
   }
+}
+
+function getConfig(): { global: GlobalConfig, mediacentre: MediacentreConfig } {
+  return { global: window.WidgetAdapter.config.global, mediacentre: window.WidgetAdapter.config.mediacentre }
 }
 
 export {
