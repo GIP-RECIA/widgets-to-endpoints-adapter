@@ -15,6 +15,8 @@
  */
 
 import type { WidgetAdapter } from '../classes/WidgetAdapter'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
+import type { PublisherConfig } from '../types/configSubtypes/PublisherConfigType'
 import type { Item } from '../types/Item'
 
 declare global {
@@ -23,12 +25,10 @@ declare global {
   }
 }
 
-const url: string = import.meta.env.VITE_PUBLISHER_RESOURCES_URI
-
 async function getDocumentsPublisher(soffit: string): Promise<string> {
   const itemArrayResponse: Array<Item> = []
 
-  const response = await getDocuments(soffit)
+  const response = await getDocuments(getConfig().publisher.resourcesUri, soffit)
 
   for (let index = 0; index < response.length; index++) {
     const element = response[index]
@@ -38,19 +38,20 @@ async function getDocumentsPublisher(soffit: string): Promise<string> {
       target: '',
       rel: '',
       icon: '',
-      event: import.meta.env.VITE_PUBLISHER_EVENT_NAME ?? '',
+      event: getConfig().publisher.eventName ?? '',
       eventpayload: JSON.stringify({ uuid: element.uuid ?? '' }),
       eventDNMA: '',
       eventpayloadDNMA: '',
+      id: element.article.guid,
     }
     itemArrayResponse.push(item)
   }
   return JSON.stringify(itemArrayResponse)
 }
 
-async function getDocuments(soffit: string) {
+async function getDocuments(url: string, soffit: string) {
   try {
-    const timeout = window.WidgetAdapter.timeout
+    const timeout = getConfig().global.timeout
     const response = await fetch(url, {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
@@ -66,6 +67,10 @@ async function getDocuments(soffit: string) {
     console.error(error)
     throw error
   }
+}
+
+function getConfig(): { global: GlobalConfig, publisher: PublisherConfig } {
+  return { global: window.WidgetAdapter.config.global, publisher: window.WidgetAdapter.config.publisher }
 }
 
 export {

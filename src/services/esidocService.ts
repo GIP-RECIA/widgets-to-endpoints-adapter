@@ -15,6 +15,8 @@
  */
 
 import type { WidgetAdapter } from '../classes/WidgetAdapter'
+import type { EsidocConfig } from '../types/configSubtypes/EsidocConfigType'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
 import type { Item } from '../types/Item'
 import { WidgetKeyEnum } from '../WidgetKeyEnum'
 
@@ -26,18 +28,18 @@ declare global {
 
 let date: Date
 let itemList: any[]
-const apiUrl: string = import.meta.env.VITE_ESIDOC_API_URL
 
 async function getEsidocSubtitle(soffit: string): Promise<string> {
   if (date === undefined) {
-    await getEsidocInfo(apiUrl, soffit)
+    // should not happpen because getEsidocItems is called before and set date
+    await getEsidocInfo(getConfig().esidoc.apiUri, soffit)
   }
   return `I18N$CacheUpdate$${date.toLocaleTimeString()}`
 }
 
 async function getEsidocItems(soffit: string): Promise<string> {
   if (itemList === undefined) {
-    await getEsidocInfo(apiUrl, soffit)
+    await getEsidocInfo(getConfig().esidoc.apiUri, soffit)
   }
 
   const responseArray: any[] | undefined = itemList
@@ -57,6 +59,7 @@ async function getEsidocItems(soffit: string): Promise<string> {
     eventpayload: '{}',
     eventDNMA: '',
     eventpayloadDNMA: '',
+    id: 'search-button',
   }
   itemArrayResponse.push(buttonSearch)
   for (let index = 0; index < responseArray.length; index++) {
@@ -72,6 +75,7 @@ async function getEsidocItems(soffit: string): Promise<string> {
         eventpayload: '',
         eventDNMA: 'click-portlet-card',
         eventpayloadDNMA: JSON.stringify({ fname: WidgetKeyEnum.ESIDOC_PRETS }),
+        id: element.permalien,
       }
       itemArrayResponse.push(ressourceLightAsItem)
     }
@@ -84,7 +88,7 @@ async function getEsidocItems(soffit: string): Promise<string> {
 
 async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
   try {
-    const timeout = window.WidgetAdapter.timeout
+    const timeout = getConfig().global.timeout
     const response = await fetch(esidocApiUrl, {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
@@ -104,6 +108,10 @@ async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
     console.error(error)
     throw error
   }
+}
+
+function getConfig(): { global: GlobalConfig, esidoc: EsidocConfig } {
+  return { global: window.WidgetAdapter.config.global, esidoc: window.WidgetAdapter.config.esidoc }
 }
 
 export {

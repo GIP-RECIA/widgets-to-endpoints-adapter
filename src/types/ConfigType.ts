@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-export interface Item {
-  name: string
-  icon: string
-  link: string
-  target: string
-  rel: string
-  event: string
-  eventpayload: string
-  eventDNMA: string
-  eventpayloadDNMA: string
-  id: string
+import type { EsidocConfig } from './configSubtypes/EsidocConfigType'
+import type { FavorisConfig } from './configSubtypes/FavorisConfigType'
+import type { GlobalConfig } from './configSubtypes/GlobalConfigType'
+import type { MediacentreConfig } from './configSubtypes/MediacentreConfigType'
+import type { PublisherConfig } from './configSubtypes/PublisherConfigType'
+
+export interface Config {
+  esidoc: EsidocConfig
+  favoris: FavorisConfig
+  global: GlobalConfig
+  mediacentre: MediacentreConfig
+  publisher: PublisherConfig
 }

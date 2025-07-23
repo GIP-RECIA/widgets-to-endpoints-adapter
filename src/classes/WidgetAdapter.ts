@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import type { Config } from '../types/ConfigType'
+import type { KeyENTPersonProfilsInfo } from '../types/KeyENTPersonProfilsInfoType'
 import { getDocumentsPublisher } from '../services/documentsPublisherService'
 import { getEsidocItems, getEsidocSubtitle } from '../services/esidocService'
 import { getFavorisMediacentre } from '../services/favorisMediacentreService'
@@ -23,8 +25,49 @@ import { WidgetKeyEnum } from '../WidgetKeyEnum'
 import { WidgetData } from './WidgetData'
 
 export class WidgetAdapter {
+  constructor(config: Config) {
+    this.config = config
+  }
+
+  config: Config
+
   getKeys = () => {
     return Object.values(WidgetKeyEnum) as string[]
+  }
+
+  getKeysENTPersonProfils = async (ENTPersonProfils: Array<string>): Promise<KeyENTPersonProfilsInfo> => {
+    ENTPersonProfils = ENTPersonProfils.map(x => x.toLocaleLowerCase())
+
+    const url = this.config.global.populationsKeysUri
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`)
+      }
+      const json: Array<KeyENTPersonProfilsInfo> = await response.json()
+      const keysForAllProfilesOfCurrentUser: Array<KeyENTPersonProfilsInfo> = json.filter(x => x.ENTPersonProfils.some(r => ENTPersonProfils.includes(r.toLocaleLowerCase())))
+
+      let allowedKeys: Array<string> = []
+      let requiredKeys: Array<string> = []
+      let defaultKeys: Array<string> = []
+
+      keysForAllProfilesOfCurrentUser.forEach((value: KeyENTPersonProfilsInfo) => {
+        allowedKeys = allowedKeys.concat(value.allowedKeys)
+        requiredKeys = requiredKeys.concat(value.requiredKeys)
+        defaultKeys = defaultKeys.concat(value.defaultKeys)
+      })
+
+      return {
+        ENTPersonProfils,
+        allowedKeys: [...new Set(allowedKeys)],
+        requiredKeys: [...new Set(requiredKeys)],
+        defaultKeys: [...new Set(defaultKeys)],
+      }
+    }
+    catch (error: any) {
+      console.error(error.message)
+      throw error
+    }
   }
 
   getJsonForWidget = async (key: string, soffit: string) => {
@@ -82,7 +125,7 @@ export class WidgetAdapter {
     if (key === WidgetKeyEnum.FAVORIS_PORTAIL) {
       return { name: 'Favoris', link: '', rel: '', target: '' }
     }
-    const url = import.meta.env.VITE_PORTAL_PORTLET_INFO.replace('{fname}', key)
+    const url = this.config.global.portletInfoUri.replace('{fname}', key)
     try {
       const response = await fetch(url)
       if (!response.ok) {

@@ -15,6 +15,8 @@
  */
 
 import type { WidgetAdapter } from '../classes/WidgetAdapter'
+import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
 import type { Item } from '../types/Item'
 
 declare global {
@@ -22,8 +24,6 @@ declare global {
     WidgetAdapter: WidgetAdapter
   }
 }
-
-const urlSwagger: string = import.meta.env.VITE_PORTAL_FAVORITES_URI
 
 async function getFavorisPortail(): Promise<string> {
   const response = await getFavorites()
@@ -41,29 +41,28 @@ async function getFavorisPortail(): Promise<string> {
 
   const ItemArray: Array<Item> = []
 
-  function populateItemArray(value, _key, _map) {
+  portletsFromJson.forEach((value: any, _key: string) => {
     const favoriteAsItem: Item = {
       name: value.title,
       link: getUrl(value),
-      icon: import.meta.env.VITE_PORTAL_ICON_TAG.replace('{icon}', value.parameters.iconUrl.value),
+      icon: getConfig().favoris.iconTag.replace('{icon}', value.parameters.iconUrl.value),
       target: getTarget(value),
       rel: getRel(value),
       event: '',
       eventpayload: '',
       eventDNMA: 'click-portlet-card',
       eventpayloadDNMA: JSON.stringify({ fname: value.fname }),
+      id: key,
     }
     ItemArray.push(favoriteAsItem)
-  }
-
-  portletsFromJson.forEach(populateItemArray)
+  })
   return JSON.stringify(ItemArray)
 }
 
 async function getFavorites() {
   try {
-    const timeout = window.WidgetAdapter.timeout
-    const response = await fetch(urlSwagger, {
+    const timeout = getConfig().global.timeout
+    const response = await fetch(getConfig().favoris.favorisUri, {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
     })
@@ -109,6 +108,10 @@ function getAlternativeMaximizedTarget(portlet: any): string {
 
 function getAlternativeMaximizedUrl(portlet: any): string {
   return portlet?.parameters?.alternativeMaximizedLink?.value
+}
+
+function getConfig(): { global: GlobalConfig, favoris: FavorisConfig } {
+  return { global: window.WidgetAdapter.config.global, favoris: window.WidgetAdapter.config.favoris }
 }
 
 export {
