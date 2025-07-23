@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+import type { WidgetAdapter } from '../classes/WidgetAdapter'
 import type { Item } from '../types/Item'
-import { CustomError } from '../classes/CustomError'
-import { instance } from '../utils/axiosUtils'
 import { WidgetKeyEnum } from '../WidgetKeyEnum'
+
+declare global {
+  interface Window {
+    WidgetAdapter: WidgetAdapter
+  }
+}
 
 let date: Date
 let itemList: any[]
@@ -79,20 +84,25 @@ async function getEsidocItems(soffit: string): Promise<string> {
 
 async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
   try {
-    const response = await instance.get(esidocApiUrl, { headers: { Authorization: `Bearer ${soffit}` } })
-    const infoArray: any[] = response.data.itemForResponseList
+    const timeout = window.WidgetAdapter.timeout
+    const response = await fetch(esidocApiUrl, {
+      method: 'GET',
+      signal: AbortSignal.timeout(timeout),
+      headers: { Authorization: `Bearer ${soffit}` },
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+    const json = await response.json()
+    const infoArray: any[] = json.itemForResponseList
     itemList = infoArray
-    const dateFromPayload = new Date(response.data.lastUpdateInstant)
+    const dateFromPayload = new Date(json.lastUpdateInstant)
     date = dateFromPayload
     return infoArray
   }
-  catch (e: any) {
-    if (e.response) {
-      throw new CustomError(e.response.data.message, e.response.status)
-    }
-    else if (e.code === 'ECONNABORTED') {
-      throw new CustomError(e.message, e.code)
-    }
+  catch (error) {
+    console.error(error)
+    throw error
   }
 }
 

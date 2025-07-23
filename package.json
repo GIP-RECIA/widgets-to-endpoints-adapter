@@ -15,7 +15,6 @@
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.15.21",
     "@uportal/open-id-connect": "^1.40.2",
-    "axios": "^1.9.0",
     "dotenv-checker": "^1.1.7",
     "eslint": "^9.27.0",
     "eslint-plugin-format": "^1.0.1",

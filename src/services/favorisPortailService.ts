@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
+import type { WidgetAdapter } from '../classes/WidgetAdapter'
 import type { Item } from '../types/Item'
-import { instance } from '../utils/axiosUtils'
+
+declare global {
+  interface Window {
+    WidgetAdapter: WidgetAdapter
+  }
+}
 
 const urlSwagger: string = import.meta.env.VITE_PORTAL_FAVORITES_URI
 
 async function getFavorisPortail(): Promise<string> {
   const response = await getFavorites()
   const portletsFromJson: Map<string, object> = new Map()
-  for (let categoryIndex = 0; categoryIndex < response.data.registry.categories.length; categoryIndex++) {
-    const category = response.data.registry.categories[categoryIndex]
+  for (let categoryIndex = 0; categoryIndex < response.registry.categories.length; categoryIndex++) {
+    const category = response.registry.categories[categoryIndex]
     for (let subcategoryIndex = 0; subcategoryIndex < category.subcategories.length; subcategoryIndex++) {
       const subcategory = category.subcategories[subcategoryIndex]
       for (let portletIndex = 0; portletIndex < subcategory.portlets.length; portletIndex++) {
@@ -55,7 +61,22 @@ async function getFavorisPortail(): Promise<string> {
 }
 
 async function getFavorites() {
-  return await instance.get(urlSwagger)
+  try {
+    const timeout = window.WidgetAdapter.timeout
+    const response = await fetch(urlSwagger, {
+      method: 'GET',
+      signal: AbortSignal.timeout(timeout),
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+    const json = await response.json()
+    return json
+  }
+  catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 function getUrl(portlet: any): string {

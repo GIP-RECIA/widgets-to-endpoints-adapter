@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
+import type { WidgetAdapter } from '../classes/WidgetAdapter'
 import type { Item } from '../types/Item'
-import { instance } from '../utils/axiosUtils'
+
+declare global {
+  interface Window {
+    WidgetAdapter: WidgetAdapter
+  }
+}
 
 const url: string = import.meta.env.VITE_PUBLISHER_RESOURCES_URI
 
@@ -24,8 +30,8 @@ async function getDocumentsPublisher(soffit: string): Promise<string> {
 
   const response = await getDocuments(soffit)
 
-  for (let index = 0; index < response.data.length; index++) {
-    const element = response.data[index]
+  for (let index = 0; index < response.length; index++) {
+    const element = response[index]
     const item: Item = {
       name: element.article.title,
       link: '',
@@ -43,7 +49,23 @@ async function getDocumentsPublisher(soffit: string): Promise<string> {
 }
 
 async function getDocuments(soffit: string) {
-  return await instance.get(url, { headers: { Authorization: `Bearer ${soffit}` } })
+  try {
+    const timeout = window.WidgetAdapter.timeout
+    const response = await fetch(url, {
+      method: 'GET',
+      signal: AbortSignal.timeout(timeout),
+      headers: { Authorization: `Bearer ${soffit}` },
+    })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+    const json = await response.json()
+    return json
+  }
+  catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 export {
