@@ -743,6 +743,7 @@ __metadata:
     "@commitlint/cli": "npm:^19.8.1"
     "@commitlint/config-conventional": "npm:^19.8.1"
     "@tsconfig/node22": "npm:^22.0.2"
+    "@types/lodash": "npm:^4"
     "@types/node": "npm:^22.15.21"
     "@uportal/open-id-connect": "npm:^1.40.2"
     dotenv-checker: "npm:^1.1.7"
@@ -751,6 +752,7 @@ __metadata:
     husky: "npm:^9.1.7"
     json-server: "npm:^1.0.0-beta.3"
     lint-staged: "npm:^16.0.0"
+    lodash: "npm:^4.17.21"
     regenerator-runtime: "npm:^0.14.1"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.8.3"
@@ -1334,6 +1336,13 @@ __metadata:
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 10/1a3c3e06236e4c4aab89499c428d585527ce50c24fe8259e8b3926d3df4cfbbbcf306cfc73ddfb66cbafc973116efd15967020b0f738f63e09e64c7d260519e7
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4":
+  version: 4.17.20
+  resolution: "@types/lodash@npm:4.17.20"
+  checksum: 10/8cd8ad3bd78d2e06a93ae8d6c9907981d5673655fec7cb274a4d9a59549aab5bb5b3017361280773b8990ddfccf363e14d1b37c97af8a9fe363de677f9a61524
   languageName: node
   linkType: hard
 

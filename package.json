@@ -8,11 +8,15 @@
   "scripts": {
     "postinstall": "husky"
   },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^4.13.1",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@tsconfig/node22": "^22.0.2",
+    "@types/lodash": "^4",
     "@types/node": "^22.15.21",
     "@uportal/open-id-connect": "^1.40.2",
     "dotenv-checker": "^1.1.7",

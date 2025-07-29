@@ -20,16 +20,23 @@ import { getDocumentsPublisher } from '../services/documentsPublisherService'
 import { getEsidocItems, getEsidocSubtitle } from '../services/esidocService'
 import { getFavorisMediacentre } from '../services/favorisMediacentreService'
 import { getFavorisPortail } from '../services/favorisPortailService'
-import portletFromApiService from '../services/utils/portletFromApiService'
+import portletFromApiService from '../services/portletFromApiService'
+import { getRegistry, getRegistryPortletsArray } from '../services/registryService'
 import { WidgetKeyEnum } from '../WidgetKeyEnum'
 import { WidgetData } from './WidgetData'
 
 export class WidgetAdapter {
   constructor(config: Config) {
     this.config = config
+    this.fetchRegistry(this.config)
   }
 
   config: Config
+
+  fetchRegistry = async (config: Config) => {
+    await getRegistry(config)
+    document.dispatchEvent(new CustomEvent('init-widget'))
+  }
 
   getKeys = () => {
     return Object.values(WidgetKeyEnum) as string[]
@@ -51,11 +58,22 @@ export class WidgetAdapter {
       let requiredKeys: Array<string> = []
       let defaultKeys: Array<string> = []
 
+      const userAllowedFnameOnCurrentUai: Array<string> = [WidgetKeyEnum.FAVORIS_PORTAIL]
+
+      getRegistryPortletsArray().forEach((value) => {
+        userAllowedFnameOnCurrentUai.push(value.fname)
+      })
+
       keysForAllProfilesOfCurrentUser.forEach((value: KeyENTPersonProfilsInfo) => {
         allowedKeys = allowedKeys.concat(value.allowedKeys)
         requiredKeys = requiredKeys.concat(value.requiredKeys)
         defaultKeys = defaultKeys.concat(value.defaultKeys)
       })
+
+      // filter all keys
+      allowedKeys = allowedKeys.filter(x => userAllowedFnameOnCurrentUai.includes(x))
+      requiredKeys = requiredKeys.filter(x => userAllowedFnameOnCurrentUai.includes(x))
+      defaultKeys = defaultKeys.filter(x => userAllowedFnameOnCurrentUai.includes(x))
 
       return {
         ENTPersonProfils,
