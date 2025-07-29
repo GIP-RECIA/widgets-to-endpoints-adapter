@@ -1,5 +1,5 @@
 {
-  "name": "widgets-to-endpoints-adapter",
+  "name": "@gip-recia/widgets-to-endpoints-adapter",
   "type": "module",
   "version": "1.0.0",
   "packageManager": "yarn@4.9.1",
