@@ -76,8 +76,16 @@ export class WidgetAdapter {
     const subtitle = await this.getSubtitle(key, soffit)
     const textEmpty: string = this.getTextEmpty(key)
     const dnma: { eventDNMA: string, eventpayloadDNMA: string } = this.getDNMA(key)
-    const widgetData: WidgetData = new WidgetData(portletData.name, subtitle, portletData.link, textEmpty, false, items, portletData.target, portletData.rel, dnma.eventDNMA, dnma.eventpayloadDNMA)
+    const emptyDiscover = this.getEmptyDiscorver(key)
+    const widgetData: WidgetData = new WidgetData(portletData.name, subtitle, portletData.link, textEmpty, emptyDiscover, items, portletData.target, portletData.rel, dnma.eventDNMA, dnma.eventpayloadDNMA)
     return JSON.stringify(widgetData)
+  }
+
+  getEmptyDiscorver = function (key: string): boolean {
+    switch (key) {
+      default:
+        return false
+    }
   }
 
   getSubtitle = async function (key: string, soffit: string) {
