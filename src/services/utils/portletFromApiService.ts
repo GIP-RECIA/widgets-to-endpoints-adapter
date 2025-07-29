@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+import type { FavorisConfig } from '../../types/configSubtypes/FavorisConfigType'
+import type { GlobalConfig } from '../../types/configSubtypes/GlobalConfigType'
+
 export default class portletFromApiService {
   static getUrl(portlet: any): string {
-    // TODO : put '/p/' in conf
     return portlet?.parameters?.alternativeMaximizedLink
       ? portlet.parameters.alternativeMaximizedLink
-      : `/portail/p/${portlet.fname}`
+      : `/${getConfig().global.context}/p/${portlet.fname}`
   }
 
   static getTarget(portlet: any): string {
@@ -46,4 +48,8 @@ function getAlternativeMaximizedTarget(portlet: any): string {
 
 function getAlternativeMaximizedUrl(portlet: any): string {
   return portlet?.parameters?.alternativeMaximizedLink
+}
+
+function getConfig(): { global: GlobalConfig, favoris: FavorisConfig } {
+  return { global: window.WidgetAdapter.config.global, favoris: window.WidgetAdapter.config.favoris }
 }

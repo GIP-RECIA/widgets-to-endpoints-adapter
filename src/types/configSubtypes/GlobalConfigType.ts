@@ -18,4 +18,5 @@ export interface GlobalConfig {
   timeout: number
   populationsKeysUri: string
   portletInfoUri: string
+  context: string
 }
