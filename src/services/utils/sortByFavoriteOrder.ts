@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-export interface GlobalConfig {
-  timeout: number
-  populationsKeysUri: string
-  portletInfoUri: string
-  context: string
-  portletRegistryUri: string
+export default function (array: Array<any>) {
+  return function (a: any, b: any) {
+    return array.indexOf(a.fname) - array.indexOf(b.fname)
+  }
 }

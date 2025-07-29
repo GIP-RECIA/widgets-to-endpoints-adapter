@@ -10,7 +10,6 @@ async function init() {
   }
   const config: Config = await response.json()
   window.WidgetAdapter = new WidgetAdapter(config)
-  document.dispatchEvent(new CustomEvent('init-widget'))
 }
 
 init()

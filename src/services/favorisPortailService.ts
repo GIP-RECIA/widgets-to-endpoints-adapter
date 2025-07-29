@@ -18,6 +18,9 @@ import type { WidgetAdapter } from '../classes/WidgetAdapter'
 import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType'
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
 import type { Item } from '../types/Item'
+import { getRegistryPortletsArray } from './registryService'
+import fetchFavorites from './utils/fetchFavorites'
+import byFavoriteOrder from './utils/sortByFavoriteOrder'
 
 declare global {
   interface Window {
@@ -26,22 +29,17 @@ declare global {
 }
 
 async function getFavorisPortail(): Promise<string> {
-  const response = await getFavorites()
-  const portletsFromJson: Map<string, object> = new Map()
-  for (let categoryIndex = 0; categoryIndex < response.registry.categories.length; categoryIndex++) {
-    const category = response.registry.categories[categoryIndex]
-    for (let subcategoryIndex = 0; subcategoryIndex < category.subcategories.length; subcategoryIndex++) {
-      const subcategory = category.subcategories[subcategoryIndex]
-      for (let portletIndex = 0; portletIndex < subcategory.portlets.length; portletIndex++) {
-        const portlet = subcategory.portlets[portletIndex]
-        portletsFromJson.set(portlet.fname, portlet)
-      }
-    }
-  }
+  const favoritesTree = await fetchFavorites()
+  const favorites = flattenFavorites(favoritesTree).map(f => f.fname)
+  // registry portlet is fetched by the adapter before is it ready so the array is populated at this point
+  const portlets = getRegistryPortletsArray()
+  const favoritesSortedAndFiltered = portlets
+    .filter(portlet => favorites.includes(portlet.fname))
+    .sort(byFavoriteOrder(favorites))
 
   const ItemArray: Array<Item> = []
 
-  portletsFromJson.forEach((value: any, _key: string) => {
+  favoritesSortedAndFiltered.forEach((value: any, _index: number) => {
     const favoriteAsItem: Item = {
       name: value.title,
       link: getUrl(value),
@@ -52,37 +50,30 @@ async function getFavorisPortail(): Promise<string> {
       eventpayload: '',
       eventDNMA: 'click-portlet-card',
       eventpayloadDNMA: JSON.stringify({ fname: value.fname }),
-      id: key,
+      id: value.fname,
     }
     ItemArray.push(favoriteAsItem)
   })
   return JSON.stringify(ItemArray)
 }
 
-async function getFavorites() {
-  try {
-    const timeout = getConfig().global.timeout
-    const response = await fetch(getConfig().favoris.favorisUri, {
-      method: 'GET',
-      signal: AbortSignal.timeout(timeout),
-    })
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`)
-    }
-    const json = await response.json()
-    return json
-  }
-  catch (error) {
-    console.error(error)
-    throw error
-  }
+function flattenFavorites(elem: any): Array<any> {
+  if (Array.isArray(elem))
+    return elem.flatMap(flattenFavorites)
+
+  if (elem.content)
+    return flattenFavorites(elem.content)
+
+  if (elem.fname)
+    return [elem]
+
+  return []
 }
 
 function getUrl(portlet: any): string {
-  // TODO : put '/p/' in conf
   return portlet?.parameters?.alternativeMaximizedLink?.value
     ? portlet.parameters.alternativeMaximizedLink.value
-    : `/portail/p/${portlet.fname}`
+    : `${getConfig().global.context}/p/${portlet.fname}`
 }
 
 function getTarget(portlet: any): string {
