@@ -73,8 +73,8 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
           rel: 'noopener noreferrer',
           event: '',
           eventpayload: '',
-          eventDNMA: '',
-          eventpayloadDNMA: '',
+          eventDNMA: 'click-portlet-card',
+          eventpayloadDNMA: JSON.stringify({ fname: 'Mediacentre', SERVICE: element.typePresentation.code }),
           id: element.idRessource,
         }
         itemArrayResponse.push(ressourceLightAsItem)
