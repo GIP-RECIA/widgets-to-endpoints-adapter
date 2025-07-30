@@ -124,12 +124,12 @@ export class WidgetAdapter {
     }
   }
 
-  getAllNames = async () => {
+  getAllNames = async (ENTPersonProfils: Array<string>) => {
     const names: Array<{ name: string, key: string }> = []
-    for (let index = 0; index < Object.values(WidgetKeyEnum).length; index++) {
-      const element = Object.values(WidgetKeyEnum)[index]
-      const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(element)
-      names.push({ name: portletData.name, key: element })
+    const keys = await this.getKeysENTPersonProfils(ENTPersonProfils)
+    for (const allowedKey of keys.allowedKeys) {
+      const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(allowedKey)
+      names.push({ name: portletData.name, key: allowedKey })
     }
     return names
   }
