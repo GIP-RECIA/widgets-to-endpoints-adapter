@@ -21,7 +21,7 @@ export default class portletFromApiService {
   static getUrl(portlet: any): string {
     return portlet?.parameters?.alternativeMaximizedLink
       ? portlet.parameters.alternativeMaximizedLink
-      : `/${getConfig().global.context}/p/${portlet.fname}`
+      : `${getConfig().global.context}/p/${portlet.fname}`
   }
 
   static getTarget(portlet: any): string {
