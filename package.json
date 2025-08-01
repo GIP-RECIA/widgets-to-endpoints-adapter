@@ -17,6 +17,7 @@
     "@types/lodash": "^4",
     "@types/node": "^22.15.21",
     "@uportal/open-id-connect": "^1.40.2",
+    "commit-and-tag-version": "^12.5.1",
     "dotenv-checker": "^1.1.7",
     "eslint": "^9.27.0",
     "eslint-plugin-format": "^1.0.1",
