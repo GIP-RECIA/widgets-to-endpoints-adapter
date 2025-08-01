@@ -4,6 +4,10 @@
   "version": "1.0.0",
   "packageManager": "yarn@4.9.2",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GIP-RECIA/widgets-to-endpoints-adapter"
+  },
   "main": "index.ts",
   "scripts": {
     "postinstall": "husky",
