@@ -8,7 +8,9 @@
     "type": "git",
     "url": "git+https://github.com/GIP-RECIA/widgets-to-endpoints-adapter"
   },
-  "main": "index.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "postinstall": "husky",
     "release": "yarn run -T commit-and-tag-version -t 'widgets-to-endpoints-adapter/v' --path . --release-as $1 || echo 'Please specify a version type (yarn run release -- [patch, minor, major])'"
