@@ -43,7 +43,7 @@ async function getFavorisPortail(): Promise<string> {
     const favoriteAsItem: Item = {
       name: value.title,
       link: getUrl(value),
-      icon: getConfig().favoris.iconTag.replace('{icon}', value.parameters.iconUrl.value),
+      icon: value.parameters.iconUrl ? getConfig().favoris.iconTag.replace('{icon}', value.parameters.iconUrl.value) : '',
       target: getTarget(value),
       rel: getRel(value),
       event: '',
