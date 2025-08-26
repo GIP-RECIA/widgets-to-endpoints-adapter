@@ -16,5 +16,4 @@
 
 export interface FavorisConfig {
   favorisUri: string
-  iconTag: string
 }
