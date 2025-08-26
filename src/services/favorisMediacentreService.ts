@@ -68,7 +68,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
         const ressourceLightAsItem: Item = {
           name: element.nomRessource,
           link: linkPattern.replace('{fname}', element.idRessource).replace('{name}', displayNameForRedirection).replace('{b64}', hasSpecialChar.toString()),
-          icon: '',
+          icon: '/images/portlet_icons/Mediacentre.svg',
           target: '_blank',
           rel: 'noopener noreferrer',
           event: '',

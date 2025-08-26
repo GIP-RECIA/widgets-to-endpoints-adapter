@@ -37,7 +37,7 @@ async function getDocumentsPublisher(soffit: string): Promise<string> {
       link: '',
       target: '',
       rel: '',
-      icon: '',
+      icon: '/images/portlet_icons/Documents.svg',
       event: getConfig().publisher.eventName ?? '',
       eventpayload: JSON.stringify({ uuid: element.uuid ?? '' }),
       eventDNMA: '',
