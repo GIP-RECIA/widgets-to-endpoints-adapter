@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.2](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/compare/widgets-to-endpoints-adapter/v1.0.1...widgets-to-endpoints-adapter/v1.0.2) (2025-08-27)
+
+
+### Features
+
+* add default icon based on the fname for documents and mediacentre favorites ([5dc51ea](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/5dc51ea0f0dd4672f763e00b162fda730be0a428))
+
+
+### Bug Fixes
+
+* check undefined of iconUrl in getFavorisPortail ([91d684e](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/91d684ebbd7247337d02eefc8883ce9949582d69))
+* remove icon tag from farovis, set item icon url without transformation ([0835464](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/0835464cfcc4539d2feb6093b42d125b6b871b86))
+* use config value instead of litteral '/portail' ([6aa7e53](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/6aa7e536e4119a300969e12a440ac2a2fff6387c))
+
 ## 1.0.1 (2025-08-01)
 
 
