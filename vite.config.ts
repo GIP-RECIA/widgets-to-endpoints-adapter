@@ -16,7 +16,6 @@
 
 /* eslint-disable node/prefer-global/process */
 import type { ConfigEnv } from 'vite'
-import { fileURLToPath } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import { name } from './package.json'
 
@@ -25,13 +24,6 @@ export default ({ mode }: ConfigEnv) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
 
   return defineConfig({
-    base: process.env.VITE_BASE_URI,
-    plugins: [],
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-      },
-    },
     build: {
       lib: {
         entry: './index.ts',
@@ -39,20 +31,6 @@ export default ({ mode }: ConfigEnv) => {
         name,
       },
       sourcemap: true,
-    },
-    server: {
-      allowedHosts: true,
-      proxy: {
-        '^(?:/[a-zA-Z0-9_-]+){2}/api': {
-          target: process.env.VITE_PROXY_URL,
-          changeOrigin: true,
-          rewrite: (path) => {
-            const rewrite = path.replace(/^(?:\/[\w-]+){2}\/api/, '')
-            console.log(rewrite)
-            return rewrite
-          },
-        },
-      },
     },
     define: {
       'process.env': { NODE_ENV: process.env.NODE_ENV },
