@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter'
-import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
-import type { PublisherConfig } from '../types/configSubtypes/PublisherConfigType'
-import type { Item } from '../types/Item'
+import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
+import type { PublisherConfig } from '../types/configSubtypes/PublisherConfigType.ts'
+import type { Item } from '../types/Item.ts'
 
 declare global {
   interface Window {

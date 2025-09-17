@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter'
-import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType'
-import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
+import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
+import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType.ts'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { Item } from '../types/Item'
-import { getRegistryPortletsArray } from './registryService'
-import fetchFavorites from './utils/fetchFavorites'
-import byFavoriteOrder from './utils/sortByFavoriteOrder'
+import { getRegistryPortletsArray } from './registryService.ts'
+import fetchFavorites from './utils/fetchFavorites.ts'
+import byFavoriteOrder from './utils/sortByFavoriteOrder.ts'
 
 declare global {
   interface Window {

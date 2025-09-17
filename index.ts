@@ -1,5 +1,5 @@
-import type { Config } from './src/types/ConfigType'
-import { WidgetAdapter } from './src/classes/WidgetAdapter'
+import type { Config } from './src/types/ConfigType.ts'
+import { WidgetAdapter } from './src/classes/WidgetAdapter.ts'
 import 'regenerator-runtime/runtime.js'
 
 async function init() {

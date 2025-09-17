@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter'
-import type { EsidocConfig } from '../types/configSubtypes/EsidocConfigType'
-import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
-import type { Item } from '../types/Item'
-import { WidgetKeyEnum } from '../WidgetKeyEnum'
+import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
+import type { EsidocConfig } from '../types/configSubtypes/EsidocConfigType.ts'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
+import type { Item } from '../types/Item.ts'
+import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
 
 declare global {
   interface Window {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType'
-import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
+import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType.ts'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 
 export default class portletFromApiService {
   static getUrl(portlet: any): string {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter'
-import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType'
-import type { MediacentreConfig } from '../types/configSubtypes/MediacentreConfigType'
-import type { Item } from '../types/Item'
-import type { KeyValuePair } from '../types/KeyValuePair'
+import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
+import type { MediacentreConfig } from '../types/configSubtypes/MediacentreConfigType.ts'
+import type { Item } from '../types/Item.ts'
+import type { KeyValuePair } from '../types/KeyValuePair.ts'
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { Buffer } from 'buffer'
-import { WidgetKeyEnum } from '../WidgetKeyEnum'
+import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
 
 declare global {
   interface Window {

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import type { EsidocConfig } from './configSubtypes/EsidocConfigType'
-import type { FavorisConfig } from './configSubtypes/FavorisConfigType'
-import type { GlobalConfig } from './configSubtypes/GlobalConfigType'
-import type { MediacentreConfig } from './configSubtypes/MediacentreConfigType'
-import type { PublisherConfig } from './configSubtypes/PublisherConfigType'
+import type { EsidocConfig } from './configSubtypes/EsidocConfigType.ts'
+import type { FavorisConfig } from './configSubtypes/FavorisConfigType.ts'
+import type { GlobalConfig } from './configSubtypes/GlobalConfigType.ts'
+import type { MediacentreConfig } from './configSubtypes/MediacentreConfigType.ts'
+import type { PublisherConfig } from './configSubtypes/PublisherConfigType.ts'
 
 export interface Config {
   esidoc: EsidocConfig

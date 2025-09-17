@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter'
-import type { Config } from '../types/ConfigType'
-import { portletRegistryToArray } from './utils/portlet-registry-to-array'
+import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
+import type { Config } from '../types/ConfigType.ts'
+import { portletRegistryToArray } from './utils/portlet-registry-to-array.ts'
 
 declare global {
   interface Window {

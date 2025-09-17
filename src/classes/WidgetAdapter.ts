@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import type { Config } from '../types/ConfigType'
-import type { KeyENTPersonProfilsInfo } from '../types/KeyENTPersonProfilsInfoType'
-import { getDocumentsPublisher } from '../services/documentsPublisherService'
-import { getEsidocItems, getEsidocSubtitle } from '../services/esidocService'
-import { getFavorisMediacentre } from '../services/favorisMediacentreService'
-import { getFavorisPortail } from '../services/favorisPortailService'
-import portletFromApiService from '../services/portletFromApiService'
-import { getRegistry, getRegistryPortletsArray } from '../services/registryService'
-import { WidgetKeyEnum } from '../WidgetKeyEnum'
-import { WidgetData } from './WidgetData'
+import type { Config } from '../types/ConfigType.ts'
+import type { KeyENTPersonProfilsInfo } from '../types/KeyENTPersonProfilsInfoType.ts'
+import { getDocumentsPublisher } from '../services/documentsPublisherService.ts'
+import { getEsidocItems, getEsidocSubtitle } from '../services/esidocService.ts'
+import { getFavorisMediacentre } from '../services/favorisMediacentreService.ts'
+import { getFavorisPortail } from '../services/favorisPortailService.ts'
+import portletFromApiService from '../services/portletFromApiService.ts'
+import { getRegistry, getRegistryPortletsArray } from '../services/registryService.ts'
+import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
+import { WidgetData } from './WidgetData.ts'
 
 export class WidgetAdapter {
   constructor(config: Config) {
