@@ -33,16 +33,16 @@ export class WidgetAdapter {
 
   config: Config
 
-  fetchRegistry = async (config: Config) => {
+  async fetchRegistry(config: Config): Promise<void> {
     await getRegistry(config)
     document.dispatchEvent(new CustomEvent('init-widget'))
   }
 
-  getKeys = () => {
+  getKeys(): string[] {
     return Object.values(WidgetKeyEnum) as string[]
   }
 
-  getKeysENTPersonProfils = async (ENTPersonProfils: Array<string>): Promise<KeyENTPersonProfilsInfo> => {
+  async getKeysENTPersonProfils(ENTPersonProfils: Array<string>): Promise<KeyENTPersonProfilsInfo> {
     ENTPersonProfils = ENTPersonProfils.map(x => x.toLocaleLowerCase())
 
     const url = this.config.global.populationsKeysUri
@@ -88,7 +88,7 @@ export class WidgetAdapter {
     }
   }
 
-  getJsonForWidget = async (key: string, soffit: string) => {
+  async getJsonForWidget(key: string, soffit: string): Promise<string> {
     const items: string = await this.getItems(key, soffit)
     const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(key)
     const subtitle = await this.getSubtitle(key, soffit)
@@ -99,14 +99,14 @@ export class WidgetAdapter {
     return JSON.stringify(widgetData)
   }
 
-  getEmptyDiscorver = function (key: string): boolean {
+  getEmptyDiscorver(key: string): boolean {
     switch (key) {
       default:
         return false
     }
   }
 
-  getSubtitle = async function (key: string, soffit: string) {
+  async getSubtitle(key: string, soffit: string): Promise<string> {
     switch (key) {
       case WidgetKeyEnum.ESIDOC_PRETS:
         return await getEsidocSubtitle(soffit)
@@ -115,7 +115,7 @@ export class WidgetAdapter {
     }
   }
 
-  getDNMA = function (key: string): { eventDNMA: string, eventpayloadDNMA: string } {
+  getDNMA(key: string): { eventDNMA: string, eventpayloadDNMA: string } {
     switch (key) {
       case WidgetKeyEnum.FAVORIS_PORTAIL:
         return { eventDNMA: '', eventpayloadDNMA: '' }
@@ -124,7 +124,7 @@ export class WidgetAdapter {
     }
   }
 
-  getAllNames = async (ENTPersonProfils: Array<string>) => {
+  async getAllNames(ENTPersonProfils: Array<string>): Promise<Array<{ name: string, key: string }>> {
     const names: Array<{ name: string, key: string }> = []
     const keys = await this.getKeysENTPersonProfils(ENTPersonProfils)
     for (const allowedKey of keys.allowedKeys) {
@@ -166,22 +166,22 @@ export class WidgetAdapter {
     }
   }
 
-  getItems = (key: string, soffit: string) => {
+  async getItems(key: string, soffit: string): Promise<string> {
     switch (key) {
       case WidgetKeyEnum.DOCUMENTS_PUBLISHER:
-        return getDocumentsPublisher(soffit)
+        return await getDocumentsPublisher(soffit)
       case WidgetKeyEnum.FAVORIS_MEDIACENTRE:
-        return getFavorisMediacentre(soffit)
+        return await getFavorisMediacentre(soffit)
       case WidgetKeyEnum.FAVORIS_PORTAIL:
-        return getFavorisPortail()
+        return await getFavorisPortail()
       case WidgetKeyEnum.ESIDOC_PRETS:
-        return getEsidocItems(soffit)
+        return await getEsidocItems(soffit)
       default:
         return ''
     }
   }
 
-  getVersion = () => {
+  getVersion(): string {
     return APP_VERSION
   }
 }
