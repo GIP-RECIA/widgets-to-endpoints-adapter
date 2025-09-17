@@ -2,7 +2,7 @@
   "name": "@gip-recia/widgets-to-endpoints-adapter",
   "type": "module",
   "version": "1.0.2",
-  "packageManager": "yarn@4.9.2",
+  "packageManager": "yarn@4.9.4",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
