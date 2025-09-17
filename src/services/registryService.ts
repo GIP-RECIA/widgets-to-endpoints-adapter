@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
 import type { Config } from '../types/ConfigType.ts'
 import { portletRegistryToArray } from './utils/portlet-registry-to-array.ts'
-
-declare global {
-  interface Window {
-    WidgetAdapter: WidgetAdapter
-  }
-}
 
 // let registryPortlets: Map<string, object> = new Map()
 let registryJson: any

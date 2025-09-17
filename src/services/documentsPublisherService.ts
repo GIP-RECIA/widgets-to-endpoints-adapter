@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { PublisherConfig } from '../types/configSubtypes/PublisherConfigType.ts'
 import type { Item } from '../types/Item.ts'
-
-declare global {
-  interface Window {
-    WidgetAdapter: WidgetAdapter
-  }
-}
 
 async function getDocumentsPublisher(soffit: string): Promise<string> {
   const itemArrayResponse: Array<Item> = []
@@ -75,7 +68,7 @@ async function getDocuments(url: string, soffit: string): Promise<any> {
 function getConfig(): { global: GlobalConfig, publisher: PublisherConfig } {
   return {
     global: window.WidgetAdapter.config.global,
-    publisher: window.WidgetAdapter.config.publisher
+    publisher: window.WidgetAdapter.config.publisher,
   }
 }
 

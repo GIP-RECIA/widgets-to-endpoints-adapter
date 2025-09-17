@@ -48,6 +48,6 @@ export default async function () {
 function getConfig(): { global: GlobalConfig, favoris: FavorisConfig } {
   return {
     global: window.WidgetAdapter.config.global,
-    favoris: window.WidgetAdapter.config.favoris
+    favoris: window.WidgetAdapter.config.favoris,
   }
 }

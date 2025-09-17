@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-import type { Config } from '../types/ConfigType.ts'
-import type { KeyENTPersonProfilsInfo } from '../types/KeyENTPersonProfilsInfoType.ts'
-import { getDocumentsPublisher } from '../services/documentsPublisherService.ts'
-import { getEsidocItems, getEsidocSubtitle } from '../services/esidocService.ts'
-import { getFavorisMediacentre } from '../services/favorisMediacentreService.ts'
-import { getFavorisPortail } from '../services/favorisPortailService.ts'
-import portletFromApiService from '../services/portletFromApiService.ts'
-import { getRegistry, getRegistryPortletsArray } from '../services/registryService.ts'
-import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
+import type { Config } from './types/ConfigType.ts'
+import type { KeyENTPersonProfilsInfo } from './types/KeyENTPersonProfilsInfoType.ts'
+import { getDocumentsPublisher } from './services/documentsPublisherService.ts'
+import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
+import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
+import { getFavorisPortail } from './services/favorisPortailService.ts'
+import portletFromApiService from './services/portletFromApiService.ts'
+import { getRegistry, getRegistryPortletsArray } from './services/registryService.ts'
+import { WidgetKeyEnum } from './WidgetKeyEnum.ts'
+import 'regenerator-runtime/runtime.js'
 
-export class WidgetAdapter {
-  constructor(config: Config) {
-    this.config = config
-    this.fetchRegistry(this.config)
-  }
-
+class WidgetAdapter {
   config: Config
 
-  async fetchRegistry(config: Config): Promise<void> {
-    await getRegistry(config)
+  constructor(config: Config) {
+    this.config = config
+    this.fetchRegistry()
+  }
+
+  async fetchRegistry(): Promise<void> {
+    await getRegistry(this.config)
     document.dispatchEvent(new CustomEvent('init-widget'))
   }
 
@@ -233,5 +234,34 @@ export class WidgetAdapter {
 
   getVersion(): string {
     return APP_VERSION
+  }
+}
+
+(async function init(): Promise<void> {
+  const url = new URL(import.meta.url).searchParams.get('configUri')
+  if (!url) {
+    console.error('"configUri" is not defined')
+    return
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+    })
+
+    if (!response.ok)
+      throw new Error(response.statusText)
+
+    const config: Config = await response.json()
+    window.WidgetAdapter = new WidgetAdapter(config)
+  }
+  catch (err) {
+    console.error('Unable to get config')
+  }
+})()
+
+declare global {
+  interface Window {
+    WidgetAdapter: WidgetAdapter
   }
 }

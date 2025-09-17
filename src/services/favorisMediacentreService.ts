@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { MediacentreConfig } from '../types/configSubtypes/MediacentreConfigType.ts'
 import type { Item } from '../types/Item.ts'
@@ -22,12 +21,6 @@ import type { KeyValuePair } from '../types/KeyValuePair.ts'
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { Buffer } from 'buffer'
 import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
-
-declare global {
-  interface Window {
-    WidgetAdapter: WidgetAdapter
-  }
-}
 
 async function getFavorisMediacentre(soffit: string): Promise<string> {
   const itemArrayResponse: Array<Item> = []
@@ -37,12 +30,12 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
 
   const groupArrayRaw: Array<string> = await getGroupsFromPortail(
     getConfig().mediacentre.userRigthsApiUri,
-    soffit
+    soffit,
   )
 
   const regExpArray: Array<RegExp> = await getConfigFromMediacentre(
     getConfig().mediacentre.apiConfigUri,
-    soffit
+    soffit,
   )
 
   for (const group of groupArrayRaw) {
@@ -54,7 +47,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
 
   const favorites: Array<string> = await getFavoritesFromPortail(
     getConfig().mediacentre.userFavorisApiUri,
-    WidgetKeyEnum.FAVORIS_MEDIACENTRE
+    WidgetKeyEnum.FAVORIS_MEDIACENTRE,
   )
 
   if (favorites === undefined || favorites.length === 0)
@@ -64,7 +57,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
     getConfig().mediacentre.apiFavorisUri,
     favorites,
     soffit,
-    groupArrayFiltered
+    groupArrayFiltered,
   )
 
   if (Array.isArray(response)) {
@@ -94,7 +87,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
           eventDNMA: 'click-portlet-card',
           eventpayloadDNMA: JSON.stringify({
             fname: 'Mediacentre',
-            SERVICE: element.typePresentation.code
+            SERVICE: element.typePresentation.code,
           }),
           id: element.idRessource,
         }
@@ -113,7 +106,7 @@ async function getFavoritesFromMediacentre(
   urlFavoris: string,
   favorites: Array<string>,
   soffit: string,
-  groupArray: Array<string>
+  groupArray: Array<string>,
 ): Promise<any> {
   try {
     const timeout = getConfig().global.timeout
@@ -122,7 +115,7 @@ async function getFavoritesFromMediacentre(
       signal: AbortSignal.timeout(timeout),
       headers: {
         'Authorization': `Bearer ${soffit}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ isMemberOf: groupArray, favorites }),
     })
@@ -142,7 +135,7 @@ async function getFavoritesFromMediacentre(
 
 async function getFavoritesFromPortail(
   getUserFavoriteResourcesUrl: string,
-  fnameMediacentreUi: string
+  fnameMediacentreUi: string,
 ): Promise<any> {
   try {
     const timeout = getConfig().global.timeout
@@ -166,7 +159,7 @@ async function getFavoritesFromPortail(
 
 async function getConfigFromMediacentre(
   configApiUrl: string,
-  soffit: string
+  soffit: string,
 ): Promise<RegExp[]> {
   try {
     const timeout = getConfig().global.timeout
@@ -199,7 +192,7 @@ async function getConfigFromMediacentre(
 
 async function getGroupsFromPortail(
   groupsApiUrl: string,
-  soffit: string
+  soffit: string,
 ): Promise<Array<string>> {
   try {
     const timeout = getConfig().global.timeout
@@ -225,7 +218,7 @@ async function getGroupsFromPortail(
 function getConfig(): { global: GlobalConfig, mediacentre: MediacentreConfig } {
   return {
     global: window.WidgetAdapter.config.global,
-    mediacentre: window.WidgetAdapter.config.mediacentre
+    mediacentre: window.WidgetAdapter.config.mediacentre,
   }
 }
 

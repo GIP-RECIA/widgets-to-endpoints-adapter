@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
 import type { EsidocConfig } from '../types/configSubtypes/EsidocConfigType.ts'
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { Item } from '../types/Item.ts'
 import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
-
-declare global {
-  interface Window {
-    WidgetAdapter: WidgetAdapter
-  }
-}
 
 let date: Date
 let itemList: any[]
@@ -117,7 +110,7 @@ async function getEsidocInfo(esidocApiUrl: string, soffit: string): Promise<any[
 function getConfig(): { global: GlobalConfig, esidoc: EsidocConfig } {
   return {
     global: window.WidgetAdapter.config.global,
-    esidoc: window.WidgetAdapter.config.esidoc
+    esidoc: window.WidgetAdapter.config.esidoc,
   }
 }
 

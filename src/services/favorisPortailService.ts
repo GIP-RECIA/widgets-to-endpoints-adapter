@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
 import type { Item } from '../types/Item'
 import portletFromApiService from './portletFromApiService.ts'
 import { getRegistryPortletsArray } from './registryService.ts'
 import fetchFavorites from './utils/fetchFavorites.ts'
 import byFavoriteOrder from './utils/sortByFavoriteOrder.ts'
-
-declare global {
-  interface Window {
-    WidgetAdapter: WidgetAdapter
-  }
-}
 
 async function getFavorisPortail(): Promise<string> {
   const favoritesTree = await fetchFavorites()

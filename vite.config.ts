@@ -26,7 +26,7 @@ export default ({ mode }: ConfigEnv) => {
   return defineConfig({
     build: {
       lib: {
-        entry: './index.ts',
+        entry: './src/widgetAdapter.ts',
         formats: ['es'],
         name,
       },
