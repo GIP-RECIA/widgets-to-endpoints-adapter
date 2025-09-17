@@ -21,7 +21,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@tsconfig/node22": "^22.0.2",
     "@types/lodash": "^4",
-    "@types/node": "^22.15.21",
+    "@types/node": "^24.5.1",
     "@uportal/open-id-connect": "^1.40.2",
     "commit-and-tag-version": "^12.5.1",
     "dotenv-checker": "^1.1.7",
