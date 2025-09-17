@@ -15,9 +15,8 @@
  */
 
 import type { WidgetAdapter } from '../classes/WidgetAdapter.ts'
-import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType.ts'
-import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { Item } from '../types/Item'
+import portletFromApiService from './portletFromApiService.ts'
 import { getRegistryPortletsArray } from './registryService.ts'
 import fetchFavorites from './utils/fetchFavorites.ts'
 import byFavoriteOrder from './utils/sortByFavoriteOrder.ts'

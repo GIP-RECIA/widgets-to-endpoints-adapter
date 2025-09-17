@@ -46,10 +46,11 @@ async function getDocumentsPublisher(soffit: string): Promise<string> {
     }
     itemArrayResponse.push(item)
   }
+
   return JSON.stringify(itemArrayResponse)
 }
 
-async function getDocuments(url: string, soffit: string) {
+async function getDocuments(url: string, soffit: string): Promise<any> {
   try {
     const timeout = getConfig().global.timeout
     const response = await fetch(url, {
@@ -57,10 +58,12 @@ async function getDocuments(url: string, soffit: string) {
       signal: AbortSignal.timeout(timeout),
       headers: { Authorization: `Bearer ${soffit}` },
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const json = await response.json()
+
     return json
   }
   catch (error) {
@@ -70,7 +73,10 @@ async function getDocuments(url: string, soffit: string) {
 }
 
 function getConfig(): { global: GlobalConfig, publisher: PublisherConfig } {
-  return { global: window.WidgetAdapter.config.global, publisher: window.WidgetAdapter.config.publisher }
+  return {
+    global: window.WidgetAdapter.config.global,
+    publisher: window.WidgetAdapter.config.publisher
+  }
 }
 
 export {

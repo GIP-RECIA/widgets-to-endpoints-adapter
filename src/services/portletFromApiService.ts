@@ -25,9 +25,8 @@ export default class portletFromApiService {
   }
 
   static getTarget(portlet: any): string {
-    if (getAlternativeMaximizedUrl(portlet)) {
+    if (getAlternativeMaximizedUrl(portlet))
       return getAlternativeMaximizedTarget(portlet)
-    }
     return '_self'
   }
 
@@ -51,5 +50,8 @@ function getAlternativeMaximizedUrl(portlet: any): string {
 }
 
 function getConfig(): { global: GlobalConfig, favoris: FavorisConfig } {
-  return { global: window.WidgetAdapter.config.global, favoris: window.WidgetAdapter.config.favoris }
+  return {
+    global: window.WidgetAdapter.config.global,
+    favoris: window.WidgetAdapter.config.favoris
+  }
 }

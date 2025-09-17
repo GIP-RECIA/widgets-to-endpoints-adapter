@@ -48,11 +48,13 @@ export class WidgetAdapter {
     const url = this.config.global.populationsKeysUri
     try {
       const response = await fetch(url)
-      if (!response.ok) {
+
+      if (!response.ok)
         throw new Error(`Response status: ${response.status}`)
-      }
+
       const json: Array<KeyENTPersonProfilsInfo> = await response.json()
-      const keysForAllProfilesOfCurrentUser: Array<KeyENTPersonProfilsInfo> = json.filter(x => x.ENTPersonProfils.some(r => ENTPersonProfils.includes(r.toLocaleLowerCase())))
+      const keysForAllProfilesOfCurrentUser: Array<KeyENTPersonProfilsInfo> = json
+        .filter(x => x.ENTPersonProfils.some(r => ENTPersonProfils.includes(r.toLocaleLowerCase())))
 
       let allowedKeys: Array<string> = []
       let requiredKeys: Array<string> = []
@@ -89,13 +91,25 @@ export class WidgetAdapter {
   }
 
   async getJsonForWidget(key: string, soffit: string): Promise<string> {
-    const items: string = await this.getItems(key, soffit)
-    const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(key)
+    const items = await this.getItems(key, soffit)
+    const portletData = await this.getLink(key)
     const subtitle = await this.getSubtitle(key, soffit)
-    const textEmpty: string = this.getTextEmpty(key)
-    const dnma: { eventDNMA: string, eventpayloadDNMA: string } = this.getDNMA(key)
+    const textEmpty = this.getTextEmpty(key)
+    const dnma = this.getDNMA(key)
     const emptyDiscover = this.getEmptyDiscorver(key)
-    const widgetData: WidgetData = new WidgetData(portletData.name, subtitle, portletData.link, textEmpty, emptyDiscover, items, portletData.target, portletData.rel, dnma.eventDNMA, dnma.eventpayloadDNMA)
+    const widgetData: WidgetData = new WidgetData(
+      portletData.name,
+      subtitle,
+      portletData.link,
+      textEmpty,
+      emptyDiscover,
+      items,
+      portletData.target,
+      portletData.rel,
+      dnma.eventDNMA,
+      dnma.eventpayloadDNMA
+    )
+
     return JSON.stringify(widgetData)
   }
 
@@ -118,9 +132,15 @@ export class WidgetAdapter {
   getDNMA(key: string): { eventDNMA: string, eventpayloadDNMA: string } {
     switch (key) {
       case WidgetKeyEnum.FAVORIS_PORTAIL:
-        return { eventDNMA: '', eventpayloadDNMA: '' }
+        return {
+          eventDNMA: '',
+          eventpayloadDNMA: ''
+        }
       default:
-        return { eventDNMA: 'click-portlet-card', eventpayloadDNMA: JSON.stringify({ fname: key }) }
+        return {
+          eventDNMA: 'click-portlet-card',
+          eventpayloadDNMA: JSON.stringify({ fname: key })
+        }
     }
   }
 
@@ -128,8 +148,11 @@ export class WidgetAdapter {
     const names: Array<{ name: string, key: string }> = []
     const keys = await this.getKeysENTPersonProfils(ENTPersonProfils)
     for (const allowedKey of keys.allowedKeys) {
-      const portletData: { name: string, link: string, target: string, rel: string } = await this.getLink(allowedKey)
-      names.push({ name: portletData.name, key: allowedKey })
+      const portletData = await this.getLink(allowedKey)
+      names.push({
+        name: portletData.name,
+        key: allowedKey
+      })
     }
     return names
   }
@@ -149,20 +172,37 @@ export class WidgetAdapter {
 
   async getLink(key: string): Promise<{ name: string, link: string, target: string, rel: string }> {
     if (key === WidgetKeyEnum.FAVORIS_PORTAIL) {
-      return { name: 'Favoris', link: '', rel: '', target: '' }
+      return {
+        name: 'Favoris',
+        link: '',
+        rel: '',
+        target: ''
+      }
     }
     const url = this.config.global.portletInfoUri.replace('{fname}', key)
     try {
       const response = await fetch(url)
-      if (!response.ok) {
+
+      if (!response.ok)
         throw new Error(`Response status: ${response.status}`)
-      }
+
       const json = await response.json()
-      return { name: json.portlet.title ?? key, link: portletFromApiService.getUrl(json.portlet), target: portletFromApiService.getTarget(json.portlet), rel: portletFromApiService.getRel(json.portlet) }
+
+      return {
+        name: json.portlet.title ?? key,
+        link: portletFromApiService.getUrl(json.portlet),
+        target: portletFromApiService.getTarget(json.portlet),
+        rel: portletFromApiService.getRel(json.portlet)
+      }
     }
     catch (error: any) {
       console.error(error.message)
-      return { name: key, link: '', rel: '', target: '' }
+      return {
+        name: key,
+        link: '',
+        rel: '',
+        target: ''
+      }
     }
   }
 

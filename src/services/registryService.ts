@@ -40,7 +40,7 @@ function getRegistryJson(): any {
   return registryJson
 }
 
-async function getRegistry(config: Config) {
+async function getRegistry(config: Config): Promise<any[]> {
   const response = await internalGetRegistry(config)
 
   registryPortletsArray = portletRegistryToArray(response)
@@ -48,17 +48,19 @@ async function getRegistry(config: Config) {
   return registryPortletsArray
 }
 
-async function internalGetRegistry(config: Config) {
+async function internalGetRegistry(config: Config): Promise<any> {
   try {
     const timeout = 60000
     const response = await fetch(config.global.portletRegistryUri, {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const json = await response.json()
+
     return json
   }
   catch (error) {

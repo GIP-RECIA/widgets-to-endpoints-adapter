@@ -38,14 +38,12 @@ async function getEsidocSubtitle(soffit: string): Promise<string> {
 }
 
 async function getEsidocItems(soffit: string): Promise<string> {
-  if (itemList === undefined) {
+  if (itemList === undefined)
     await getEsidocInfo(getConfig().esidoc.apiUri, soffit)
-  }
 
   const responseArray: any[] | undefined = itemList
-  if (responseArray === undefined) {
+  if (responseArray === undefined)
     return ''
-  }
 
   const itemArrayResponse: Item[] = []
 
@@ -68,7 +66,9 @@ async function getEsidocItems(soffit: string): Promise<string> {
       const ressourceLightAsItem: Item = {
         name: element.titre,
         link: `${getConfig().global.context}/api/ExternalURLStats?fname=ESIDOC&service=${element.permalien}`,
-        icon: element.retard ? '<svg style="width: 20px;height: 20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M128 0c17.7 0 32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 48 0c26.5 0 48 21.5 48 48l0 48L0 160l0-48C0 85.5 21.5 64 48 64l48 0 0-32c0-17.7 14.3-32 32-32zM0 192l448 0 0 272c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 192zM305 305c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47z"/></svg>' : '',
+        icon: element.retard
+          ? '<svg style="width: 20px;height: 20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M128 0c17.7 0 32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 48 0c26.5 0 48 21.5 48 48l0 48L0 160l0-48C0 85.5 21.5 64 48 64l48 0 0-32c0-17.7 14.3-32 32-32zM0 192l448 0 0 272c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 192zM305 305c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47z"/></svg>'
+          : '',
         target: '_blank',
         rel: 'noopener noreferrer',
         event: '',
@@ -77,6 +77,7 @@ async function getEsidocItems(soffit: string): Promise<string> {
         eventpayloadDNMA: JSON.stringify({ fname: WidgetKeyEnum.ESIDOC_PRETS }),
         id: element.permalien,
       }
+
       itemArrayResponse.push(ressourceLightAsItem)
     }
     catch (error) {
@@ -86,7 +87,7 @@ async function getEsidocItems(soffit: string): Promise<string> {
   return JSON.stringify(itemArrayResponse)
 }
 
-async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
+async function getEsidocInfo(esidocApiUrl: string, soffit: string): Promise<any[]> {
   try {
     const timeout = getConfig().global.timeout
     const response = await fetch(esidocApiUrl, {
@@ -94,14 +95,17 @@ async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
       signal: AbortSignal.timeout(timeout),
       headers: { Authorization: `Bearer ${soffit}` },
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const json = await response.json()
+
     const infoArray: any[] = json.itemForResponseList
     itemList = infoArray
     const dateFromPayload = new Date(json.lastUpdateInstant)
     date = dateFromPayload
+
     return infoArray
   }
   catch (error) {
@@ -111,7 +115,10 @@ async function getEsidocInfo(esidocApiUrl: string, soffit: string) {
 }
 
 function getConfig(): { global: GlobalConfig, esidoc: EsidocConfig } {
-  return { global: window.WidgetAdapter.config.global, esidoc: window.WidgetAdapter.config.esidoc }
+  return {
+    global: window.WidgetAdapter.config.global,
+    esidoc: window.WidgetAdapter.config.esidoc
+  }
 }
 
 export {

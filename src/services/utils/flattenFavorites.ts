@@ -16,14 +16,12 @@
 
 export default function flattenFavorites(elem: any): any {
   // undefined has no favorites
-  if (elem === undefined) {
+  if (elem === undefined)
     return []
-  }
 
   // recursively cycle through children
-  if (Array.isArray(elem)) {
+  if (Array.isArray(elem))
     return elem.flatMap(flattenFavorites)
-  }
 
   const { content } = elem
   // if there is no content it is a leaf node

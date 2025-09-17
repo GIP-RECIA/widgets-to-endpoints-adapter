@@ -24,9 +24,10 @@ export default async function () {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const data = await response.json()
     if (
       data?.authenticated
@@ -35,6 +36,7 @@ export default async function () {
     ) {
       return data.layout.favorites
     }
+
     return []
   }
   catch (err) {
@@ -44,5 +46,8 @@ export default async function () {
 }
 
 function getConfig(): { global: GlobalConfig, favoris: FavorisConfig } {
-  return { global: window.WidgetAdapter.config.global, favoris: window.WidgetAdapter.config.favoris }
+  return {
+    global: window.WidgetAdapter.config.global,
+    favoris: window.WidgetAdapter.config.favoris
+  }
 }

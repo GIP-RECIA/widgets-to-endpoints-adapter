@@ -35,25 +35,37 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
   const linkPattern: string = getConfig().mediacentre.redirectLinkPattern
   const groupArrayFiltered: Array<string> = []
 
-  const groupArrayRaw: Array<string> = await getGroupsFromPortail(getConfig().mediacentre.userRigthsApiUri, soffit)
+  const groupArrayRaw: Array<string> = await getGroupsFromPortail(
+    getConfig().mediacentre.userRigthsApiUri,
+    soffit
+  )
 
-  const regExpArray: Array<RegExp> = await getConfigFromMediacentre(getConfig().mediacentre.apiConfigUri, soffit)
+  const regExpArray: Array<RegExp> = await getConfigFromMediacentre(
+    getConfig().mediacentre.apiConfigUri,
+    soffit
+  )
 
   for (const group of groupArrayRaw) {
     for (const regex of regExpArray) {
-      if (regex.test(group)) {
+      if (regex.test(group))
         groupArrayFiltered.push(group)
-      }
     }
   }
 
-  const favorites: Array<string> = await getFavoritesFromPortail(getConfig().mediacentre.userFavorisApiUri, WidgetKeyEnum.FAVORIS_MEDIACENTRE)
+  const favorites: Array<string> = await getFavoritesFromPortail(
+    getConfig().mediacentre.userFavorisApiUri,
+    WidgetKeyEnum.FAVORIS_MEDIACENTRE
+  )
 
-  if (favorites === undefined || favorites.length === 0) {
+  if (favorites === undefined || favorites.length === 0)
     return JSON.stringify(itemArrayResponse)
-  }
 
-  const response = await getFavoritesFromMediacentre(getConfig().mediacentre.apiFavorisUri, favorites, soffit, groupArrayFiltered)
+  const response = await getFavoritesFromMediacentre(
+    getConfig().mediacentre.apiFavorisUri,
+    favorites,
+    soffit,
+    groupArrayFiltered
+  )
 
   if (Array.isArray(response)) {
     for (let index = 0; index < response.length; index++) {
@@ -63,18 +75,27 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
         const displayName: string = element.nomRessource
         const regex = /[^A-Z1-9]+/i
         const hasSpecialChar: boolean = displayName.match(regex) != null
-        const displayNameForRedirection: string = hasSpecialChar ? Buffer.from(displayName).toString('base64') : displayName
+        const displayNameForRedirection: string = hasSpecialChar
+          ? Buffer.from(displayName).toString('base64')
+          : displayName
+        const link = linkPattern
+          .replace('{fname}', element.idRessource)
+          .replace('{name}', displayNameForRedirection)
+          .replace('{b64}', hasSpecialChar.toString())
 
         const ressourceLightAsItem: Item = {
           name: element.nomRessource,
-          link: linkPattern.replace('{fname}', element.idRessource).replace('{name}', displayNameForRedirection).replace('{b64}', hasSpecialChar.toString()),
+          link,
           icon: '/images/portlet_icons/Mediacentre.svg',
           target: '_blank',
           rel: 'noopener noreferrer',
           event: '',
           eventpayload: '',
           eventDNMA: 'click-portlet-card',
-          eventpayloadDNMA: JSON.stringify({ fname: 'Mediacentre', SERVICE: element.typePresentation.code }),
+          eventpayloadDNMA: JSON.stringify({
+            fname: 'Mediacentre',
+            SERVICE: element.typePresentation.code
+          }),
           id: element.idRessource,
         }
         itemArrayResponse.push(ressourceLightAsItem)
@@ -84,23 +105,33 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
       }
     }
   }
+
   return JSON.stringify(itemArrayResponse)
 }
 
-async function getFavoritesFromMediacentre(urlFavoris: string, favorites: Array<string>, soffit: string, groupArray: Array<string>) {
+async function getFavoritesFromMediacentre(
+  urlFavoris: string,
+  favorites: Array<string>,
+  soffit: string,
+  groupArray: Array<string>
+): Promise<any> {
   try {
     const timeout = getConfig().global.timeout
     const response = await fetch(urlFavoris, {
       method: 'POST',
       signal: AbortSignal.timeout(timeout),
-      headers:
-      { 'Authorization': `Bearer ${soffit}`, 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${soffit}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ isMemberOf: groupArray, favorites }),
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const json = await response.json()
+
     return json
   }
   catch (error) {
@@ -109,17 +140,22 @@ async function getFavoritesFromMediacentre(urlFavoris: string, favorites: Array<
   }
 }
 
-async function getFavoritesFromPortail(getUserFavoriteResourcesUrl: string, fnameMediacentreUi: string) {
+async function getFavoritesFromPortail(
+  getUserFavoriteResourcesUrl: string,
+  fnameMediacentreUi: string
+): Promise<any> {
   try {
     const timeout = getConfig().global.timeout
     const response = await fetch(`${getUserFavoriteResourcesUrl}${fnameMediacentreUi}`, {
       method: 'GET',
       signal: AbortSignal.timeout(timeout),
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const json = await response.json()
+
     return json.mediacentreFavorites
   }
   catch (error) {
@@ -128,7 +164,10 @@ async function getFavoritesFromPortail(getUserFavoriteResourcesUrl: string, fnam
   }
 }
 
-async function getConfigFromMediacentre(configApiUrl: string, soffit: string) {
+async function getConfigFromMediacentre(
+  configApiUrl: string,
+  soffit: string
+): Promise<RegExp[]> {
   try {
     const timeout = getConfig().global.timeout
     const response = await fetch(configApiUrl, {
@@ -138,15 +177,18 @@ async function getConfigFromMediacentre(configApiUrl: string, soffit: string) {
       { 'Authorization': `Bearer ${soffit}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ uais: [] }),
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const json = await response.json()
+
     const groups: Map<string, KeyValuePair<string>> = json.configListMap.groups
     const regExpArray: Array<RegExp> = []
     groups.forEach((value, _key, _map) => {
       regExpArray.push(new RegExp(value.value))
     })
+
     return regExpArray
   }
   catch (error) {
@@ -155,7 +197,10 @@ async function getConfigFromMediacentre(configApiUrl: string, soffit: string) {
   }
 }
 
-async function getGroupsFromPortail(groupsApiUrl: string, soffit: string): Promise<Array<string>> {
+async function getGroupsFromPortail(
+  groupsApiUrl: string,
+  soffit: string
+): Promise<Array<string>> {
   try {
     const timeout = getConfig().global.timeout
     const response = await fetch(groupsApiUrl, {
@@ -163,10 +208,12 @@ async function getGroupsFromPortail(groupsApiUrl: string, soffit: string): Promi
       signal: AbortSignal.timeout(timeout),
       headers: { Authorization: `Bearer ${soffit}` },
     })
-    if (!response.ok) {
+
+    if (!response.ok)
       throw new Error(`Response status: ${response.status}`)
-    }
+
     const json = await response.json()
+
     return json.groups.map((x: { name: any }) => x.name)
   }
   catch (error) {
@@ -176,7 +223,10 @@ async function getGroupsFromPortail(groupsApiUrl: string, soffit: string): Promi
 }
 
 function getConfig(): { global: GlobalConfig, mediacentre: MediacentreConfig } {
-  return { global: window.WidgetAdapter.config.global, mediacentre: window.WidgetAdapter.config.mediacentre }
+  return {
+    global: window.WidgetAdapter.config.global,
+    mediacentre: window.WidgetAdapter.config.mediacentre
+  }
 }
 
 export {

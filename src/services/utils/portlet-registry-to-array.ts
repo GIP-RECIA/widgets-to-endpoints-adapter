@@ -47,9 +47,8 @@ function treeWalker(registryJson: { registry: any, portlets: any[], name: any, c
 
   const portlets = registryJson.portlets || []
 
-  if (portlets.length > 0) {
+  if (portlets.length > 0)
     portlets.forEach(p => (p.categories = [registryJson.name]))
-  }
 
   if (registryJson.categories) {
     return portlets
