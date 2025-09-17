@@ -2,19 +2,28 @@
   "name": "@gip-recia/widgets-to-endpoints-adapter",
   "type": "module",
   "version": "1.0.2",
-  "packageManager": "yarn@4.9.4",
+  "description": "",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GIP-RECIA/widgets-to-endpoints-adapter"
+    "url": "git+https://github.com/GIP-RECIA/widgets-to-endpoints-adapter.git"
   },
+  "bugs": {
+    "url": "https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/issues"
+  },
+  "keywords": [
+    "gip-recia"
+  ],
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "postinstall": "husky",
     "build": "tsc && vite build",
-    "release": "yarn run -T commit-and-tag-version -t 'widgets-to-endpoints-adapter/v' --path . --release-as $1 || echo 'Please specify a version type (yarn run release -- [patch, minor, major])'"
+    "release": "commit-and-tag-version -t 'widgets-to-endpoints-adapter/v' --path . --release-as $1 || echo 'Please specify a version type (yarn run release -- [patch, minor, major])'"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^5.3.0",
@@ -36,5 +45,6 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "vite": "^7.1.5"
-  }
+  },
+  "packageManager": "yarn@4.9.4"
 }
