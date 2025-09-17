@@ -768,7 +768,7 @@ __metadata:
     "@commitlint/config-conventional": "npm:^19.8.1"
     "@tsconfig/node22": "npm:^22.0.2"
     "@types/lodash": "npm:^4"
-    "@types/node": "npm:^24.5.1"
+    "@types/node": "npm:^24"
     "@uportal/open-id-connect": "npm:^1.40.2"
     commit-and-tag-version: "npm:^12.6.0"
     dotenv-checker: "npm:^1.1.7"
@@ -1389,7 +1389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^24.5.1":
+"@types/node@npm:*, @types/node@npm:^24":
   version: 24.5.1
   resolution: "@types/node@npm:24.5.1"
   dependencies:
