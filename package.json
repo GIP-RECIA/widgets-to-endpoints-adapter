@@ -29,7 +29,7 @@
     "eslint-plugin-format": "^1.0.1",
     "husky": "^9.1.7",
     "json-server": "^1.0.0-beta.3",
-    "lint-staged": "^16.0.0",
+    "lint-staged": "^16.1.6",
     "lodash": "^4.17.21",
     "regenerator-runtime": "^0.14.1",
     "ts-node": "^10.9.2",
