@@ -23,7 +23,6 @@ import { getFavorisPortail } from '../services/favorisPortailService.ts'
 import portletFromApiService from '../services/portletFromApiService.ts'
 import { getRegistry, getRegistryPortletsArray } from '../services/registryService.ts'
 import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
-import { WidgetData } from './WidgetData.ts'
 
 export class WidgetAdapter {
   constructor(config: Config) {
@@ -94,21 +93,32 @@ export class WidgetAdapter {
     const items = await this.getItems(key, soffit)
     const portletData = await this.getLink(key)
     const subtitle = await this.getSubtitle(key, soffit)
-    const textEmpty = this.getTextEmpty(key)
+    const emptyText = this.getTextEmpty(key)
     const dnma = this.getDNMA(key)
     const emptyDiscover = this.getEmptyDiscorver(key)
-    const widgetData: WidgetData = new WidgetData(
-      portletData.name,
+    const widgetData: {
+      name: string
+      subtitle: string
+      link: string
+      emptyText: string
+      emptyDiscover: boolean
+      items: string
+      target: string
+      rel: string
+      eventDNMA: string
+      eventpayloadDNMA: string
+    } = {
+      name: portletData.name,
       subtitle,
-      portletData.link,
-      textEmpty,
+      link: portletData.link,
+      emptyText,
       emptyDiscover,
       items,
-      portletData.target,
-      portletData.rel,
-      dnma.eventDNMA,
-      dnma.eventpayloadDNMA
-    )
+      target: portletData.target,
+      rel: portletData.rel,
+      eventDNMA: dnma.eventDNMA,
+      eventpayloadDNMA: dnma.eventpayloadDNMA,
+    }
 
     return JSON.stringify(widgetData)
   }
@@ -134,12 +144,12 @@ export class WidgetAdapter {
       case WidgetKeyEnum.FAVORIS_PORTAIL:
         return {
           eventDNMA: '',
-          eventpayloadDNMA: ''
+          eventpayloadDNMA: '',
         }
       default:
         return {
           eventDNMA: 'click-portlet-card',
-          eventpayloadDNMA: JSON.stringify({ fname: key })
+          eventpayloadDNMA: JSON.stringify({ fname: key }),
         }
     }
   }
@@ -151,7 +161,7 @@ export class WidgetAdapter {
       const portletData = await this.getLink(allowedKey)
       names.push({
         name: portletData.name,
-        key: allowedKey
+        key: allowedKey,
       })
     }
     return names
@@ -176,7 +186,7 @@ export class WidgetAdapter {
         name: 'Favoris',
         link: '',
         rel: '',
-        target: ''
+        target: '',
       }
     }
     const url = this.config.global.portletInfoUri.replace('{fname}', key)
@@ -192,7 +202,7 @@ export class WidgetAdapter {
         name: json.portlet.title ?? key,
         link: portletFromApiService.getUrl(json.portlet),
         target: portletFromApiService.getTarget(json.portlet),
-        rel: portletFromApiService.getRel(json.portlet)
+        rel: portletFromApiService.getRel(json.portlet),
       }
     }
     catch (error: any) {
@@ -201,7 +211,7 @@ export class WidgetAdapter {
         name: key,
         link: '',
         rel: '',
-        target: ''
+        target: '',
       }
     }
   }
