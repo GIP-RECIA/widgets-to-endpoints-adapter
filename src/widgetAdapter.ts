@@ -24,8 +24,8 @@ import { getDocumentsPublisher } from './services/documentsPublisherService.ts'
 import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
 import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
 import { getFavorisPortail } from './services/favorisPortailService.ts'
-import portletFromApiService from './services/portletFromApiService.ts'
 import PortletService from './services/portletService.ts'
+import { getServiceLink } from './utils/linkUtils.ts'
 import { WidgetKeyEnum } from './WidgetKeyEnum.ts'
 import 'regenerator-runtime/runtime.js'
 
@@ -68,9 +68,18 @@ class WidgetAdapter {
   }
 
   async getJsonForWidget(key: string, soffit: string): Promise<Widget> {
-    const items = await this.getItems(key, soffit)
-    const { name, link } = await this.getInfo(key)
+    const { name } = this.widgetWrapperConfig!.names.find(name => name.key === key)!
+    const portlet = this.services?.find(({ fname }) => fname === key)
+    const link: Link | undefined = portlet
+      ? getServiceLink(
+          this.config.global.context,
+          portlet.fname,
+          portlet.parameters.alternativeMaximizedLink as unknown as string | undefined,
+          portlet.parameters.alternativeMaximizedLinkTarget as unknown as string | undefined,
+        )
+      : undefined
     const subtitle = await this.getSubtitle(key, soffit)
+    const items = await this.getItems(key, soffit)
     const widgetData: Widget = {
       uid: key,
       name,
@@ -98,38 +107,6 @@ class WidgetAdapter {
         return await getEsidocSubtitle(soffit)
       default :
         return ''
-    }
-  }
-
-  async getInfo(key: string): Promise<{ name: string, link?: Link }> {
-    if (key === WidgetKeyEnum.FAVORIS_PORTAIL) {
-      return {
-        name: 'Favoris',
-      }
-    }
-
-    try {
-      const response = await fetch(this.config.global.portletInfoUri.replace('{fname}', key))
-
-      if (!response.ok)
-        throw new Error(`Response status: ${response.status}`)
-
-      const json = await response.json()
-
-      return {
-        name: json.portlet.title ?? key,
-        link: {
-          href: portletFromApiService.getUrl(json.portlet),
-          target: portletFromApiService.getTarget(json.portlet),
-          rel: portletFromApiService.getRel(json.portlet),
-        },
-      }
-    }
-    catch (error: any) {
-      console.error(error.message)
-      return {
-        name: key,
-      }
     }
   }
 
