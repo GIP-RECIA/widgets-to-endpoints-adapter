@@ -42,3 +42,12 @@ export interface WidgetItem {
   link?: Link
   dispatchEvents?: { type: string, detail?: object }[]
 }
+
+export interface ProfilsConfig {
+  ENTPersonProfils: Array<string>
+  allowedKeys: Array<string>
+  requiredKeys: Array<string>
+  defaultKeys: Array<string>
+}
+
+export type WidgetsWrapperConfig = Omit<ProfilsConfig, 'ENTPersonProfils'>

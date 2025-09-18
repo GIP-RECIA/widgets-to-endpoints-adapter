@@ -15,11 +15,11 @@
  */
 
 import type { Config } from './types/ConfigType.ts'
-import type { KeyENTPersonProfilsInfo } from './types/KeyENTPersonProfilsInfoType.ts'
 import type { Link } from './types/linkType.ts'
 import type { PortletFromRegistry } from './types/registryTypes.ts'
-import type { Widget, WidgetItem } from './types/widgetType.ts'
+import type { Widget, WidgetItem, WidgetsWrapperConfig } from './types/widgetType.ts'
 import { version } from '../package.json'
+import { ConfigService } from './services/configService.ts'
 import { getDocumentsPublisher } from './services/documentsPublisherService.ts'
 import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
 import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
@@ -51,52 +51,17 @@ class WidgetAdapter {
     return version
   }
 
-  async getKeysENTPersonProfils(ENTPersonProfils: Array<string>): Promise<KeyENTPersonProfilsInfo> {
-    ENTPersonProfils = ENTPersonProfils.map(x => x.toLocaleLowerCase())
-
-    const url = this.config.global.populationsKeysUri
-    try {
-      const response = await fetch(url)
-
-      if (!response.ok)
-        throw new Error(`Response status: ${response.status}`)
-
-      const json: Array<KeyENTPersonProfilsInfo> = await response.json()
-      const keysForAllProfilesOfCurrentUser: Array<KeyENTPersonProfilsInfo> = json
-        .filter(x => x.ENTPersonProfils.some(r => ENTPersonProfils.includes(r.toLocaleLowerCase())))
-
-      let allowedKeys: Array<string> = []
-      let requiredKeys: Array<string> = []
-      let defaultKeys: Array<string> = []
-
-      const userAllowedFnameOnCurrentUai: Array<string> = [WidgetKeyEnum.FAVORIS_PORTAIL]
-
-      this.services?.forEach((value) => {
-        userAllowedFnameOnCurrentUai.push(value.fname)
-      })
-
-      keysForAllProfilesOfCurrentUser.forEach((value: KeyENTPersonProfilsInfo) => {
-        allowedKeys = allowedKeys.concat(value.allowedKeys)
-        requiredKeys = requiredKeys.concat(value.requiredKeys)
-        defaultKeys = defaultKeys.concat(value.defaultKeys)
-      })
-
-      // filter all keys
-      allowedKeys = allowedKeys.filter(x => userAllowedFnameOnCurrentUai.includes(x))
-      requiredKeys = requiredKeys.filter(x => userAllowedFnameOnCurrentUai.includes(x))
-      defaultKeys = defaultKeys.filter(x => userAllowedFnameOnCurrentUai.includes(x))
-
-      return {
-        ENTPersonProfils,
-        allowedKeys: [...new Set(allowedKeys)],
-        requiredKeys: [...new Set(requiredKeys)],
-        defaultKeys: [...new Set(defaultKeys)],
-      }
-    }
-    catch (error: any) {
-      console.error(error.message)
-      throw error
-    }
+  async getKeysENTPersonProfils(
+    ENTPersonProfils: Array<string>,
+  ): Promise<WidgetsWrapperConfig> {
+    return await ConfigService.getWidgetsWrapperConfig(
+      this.config.global.populationsKeysUri,
+      ENTPersonProfils.map(profil => profil.toLocaleLowerCase()),
+      [
+        WidgetKeyEnum.FAVORIS_PORTAIL,
+        ...(this.services?.map(s => s.fname) ?? []),
+      ],
+    )
   }
 
   async getJsonForWidget(key: string, soffit: string): Promise<Widget> {
