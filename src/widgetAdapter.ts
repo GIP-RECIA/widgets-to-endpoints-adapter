@@ -101,14 +101,12 @@ class WidgetAdapter {
     const items = await this.getItems(key, soffit)
     const { name, link } = await this.getInfo(key)
     const subtitle = await this.getSubtitle(key, soffit)
-    const emptyText = this.getTextEmpty(key)
     const emptyDiscover = this.getEmptyDiscorver(key)
     const widgetData: Widget = {
       uid: key,
       name,
       subtitle,
       link,
-      emptyText,
       emptyDiscover,
       items,
     }
@@ -143,19 +141,6 @@ class WidgetAdapter {
       })
     }
     return names
-  }
-
-  getTextEmpty(key: string): string {
-    switch (key) {
-      case WidgetKeyEnum.FAVORIS_PORTAIL:
-        return 'aucun favori'
-      case WidgetKeyEnum.DOCUMENTS_PUBLISHER:
-        return 'aucun document'
-      case WidgetKeyEnum.FAVORIS_MEDIACENTRE:
-        return 'aucune ressource favorite'
-      default:
-        return key
-    }
   }
 
   async getInfo(key: string): Promise<{ name: string, link?: Link }> {
