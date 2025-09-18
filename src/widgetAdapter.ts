@@ -92,14 +92,13 @@ class WidgetAdapter {
     }
   }
 
-  async getJsonForWidget(key: string, soffit: string): Promise<Widget & { eventDNMA: any, eventpayloadDNMA: any }> {
+  async getJsonForWidget(key: string, soffit: string): Promise<Widget> {
     const items = await this.getItems(key, soffit)
     const { name, link } = await this.getInfo(key)
     const subtitle = await this.getSubtitle(key, soffit)
     const emptyText = this.getTextEmpty(key)
-    const dnma = this.getDNMA(key)
     const emptyDiscover = this.getEmptyDiscorver(key)
-    const widgetData: Widget & { eventDNMA: any, eventpayloadDNMA: any } = {
+    const widgetData: Widget = {
       uid: key,
       name,
       subtitle,
@@ -107,8 +106,6 @@ class WidgetAdapter {
       emptyText,
       emptyDiscover,
       items,
-      eventDNMA: dnma.eventDNMA,
-      eventpayloadDNMA: dnma.eventpayloadDNMA,
     }
 
     return widgetData
@@ -127,21 +124,6 @@ class WidgetAdapter {
         return await getEsidocSubtitle(soffit)
       default :
         return ''
-    }
-  }
-
-  getDNMA(key: string): { eventDNMA: string, eventpayloadDNMA: string } {
-    switch (key) {
-      case WidgetKeyEnum.FAVORIS_PORTAIL:
-        return {
-          eventDNMA: '',
-          eventpayloadDNMA: '',
-        }
-      default:
-        return {
-          eventDNMA: 'click-portlet-card',
-          eventpayloadDNMA: JSON.stringify({ fname: key }),
-        }
     }
   }
 

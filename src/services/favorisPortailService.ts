@@ -42,10 +42,14 @@ async function getFavorisPortail(): Promise<WidgetItem[]> {
         target: getTarget(value),
         rel: getRel(value),
       },
-      event: '',
-      eventpayload: '',
-      eventDNMA: 'click-portlet-card',
-      eventDNMApayload: JSON.stringify({ fname: value.fname }),
+      dispatchEvents: [
+        {
+          type: 'click-portlet-card',
+          detail: {
+            fname: value.fname,
+          },
+        },
+      ],
     }
     ItemArray.push(favoriteAsItem)
   })

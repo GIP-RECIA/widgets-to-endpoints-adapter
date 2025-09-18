@@ -29,10 +29,14 @@ async function getDocumentsPublisher(soffit: string): Promise<WidgetItem[]> {
       id: element.article.guid,
       name: element.article.title,
       icon: '/images/portlet_icons/Documents.svg',
-      event: getConfig().publisher.eventName ?? '',
-      eventpayload: JSON.stringify({ uuid: element.uuid ?? '' }),
-      eventDNMA: '',
-      eventDNMApayload: '',
+      dispatchEvents: [
+        {
+          type: getConfig().publisher.eventName ?? '',
+          detail: {
+            uuid: element.uuid ?? '',
+          },
+        },
+      ],
     }
     itemArrayResponse.push(item)
   }

@@ -84,13 +84,15 @@ async function getFavorisMediacentre(soffit: string): Promise<WidgetItem[]> {
             target: '_blank',
             rel: 'noopener noreferrer',
           },
-          event: '',
-          eventpayload: '',
-          eventDNMA: 'click-portlet-card',
-          eventDNMApayload: JSON.stringify({
-            fname: 'Mediacentre',
-            SERVICE: element.typePresentation.code,
-          }),
+          dispatchEvents: [
+            {
+              type: 'click-portlet-card',
+              detail: {
+                fname: 'Mediacentre',
+                SERVICE: element.typePresentation.code,
+              },
+            },
+          ],
         }
         itemArrayResponse.push(ressourceLightAsItem)
       }
