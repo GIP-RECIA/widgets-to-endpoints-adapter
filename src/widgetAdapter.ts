@@ -18,6 +18,7 @@ import type { Config } from './types/ConfigType.ts'
 import type { KeyENTPersonProfilsInfo } from './types/KeyENTPersonProfilsInfoType.ts'
 import type { Link } from './types/linkType.ts'
 import type { Widget, WidgetItem } from './types/widgetType.ts'
+import { version } from '../package.json'
 import { getDocumentsPublisher } from './services/documentsPublisherService.ts'
 import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
 import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
@@ -33,6 +34,10 @@ class WidgetAdapter {
   constructor(config: Config) {
     this.config = config
     this.fetchRegistry()
+  }
+
+  getVersion(): string {
+    return version
   }
 
   async fetchRegistry(): Promise<void> {
@@ -198,10 +203,6 @@ class WidgetAdapter {
       default:
         return []
     }
-  }
-
-  getVersion(): string {
-    return APP_VERSION
   }
 }
 
