@@ -17,15 +17,13 @@
 import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType.ts'
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { WidgetItem } from '../types/widgetType.ts'
-import { getRegistryPortletsArray } from './registryService.ts'
 import fetchFavorites from './utils/fetchFavorites.ts'
 import byFavoriteOrder from './utils/sortByFavoriteOrder.ts'
 
-async function getFavorisPortail(): Promise<WidgetItem[]> {
+async function getFavorisPortail(portlets: any[]): Promise<WidgetItem[]> {
   const favoritesTree = await fetchFavorites()
   const favorites = flattenFavorites(favoritesTree).map(f => f.fname)
   // registry portlet is fetched by the adapter before is it ready so the array is populated at this point
-  const portlets = getRegistryPortletsArray()
   const favoritesSortedAndFiltered = portlets
     .filter(portlet => favorites.includes(portlet.fname))
     .sort(byFavoriteOrder(favorites))

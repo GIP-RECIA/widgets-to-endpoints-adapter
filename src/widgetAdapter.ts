@@ -17,6 +17,7 @@
 import type { Config } from './types/ConfigType.ts'
 import type { KeyENTPersonProfilsInfo } from './types/KeyENTPersonProfilsInfoType.ts'
 import type { Link } from './types/linkType.ts'
+import type { PortletFromRegistry } from './types/registryTypes.ts'
 import type { Widget, WidgetItem } from './types/widgetType.ts'
 import { version } from '../package.json'
 import { getDocumentsPublisher } from './services/documentsPublisherService.ts'
@@ -24,29 +25,30 @@ import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
 import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
 import { getFavorisPortail } from './services/favorisPortailService.ts'
 import portletFromApiService from './services/portletFromApiService.ts'
-import { getRegistry, getRegistryPortletsArray } from './services/registryService.ts'
+import PortletService from './services/portletService.ts'
 import { WidgetKeyEnum } from './WidgetKeyEnum.ts'
 import 'regenerator-runtime/runtime.js'
 
 class WidgetAdapter {
   config: Config
 
+  services: Array<PortletFromRegistry> | undefined
+
   constructor(config: Config) {
     this.config = config
-    this.fetchRegistry()
+    this.init()
   }
+
+  async init(): Promise<void> {
+    this.services = await PortletService.getAll(this.config.global.portletRegistryUri)
+    if (this.services)
+      document.dispatchEvent(new CustomEvent('init-widget'))
+  }
+
+  /////////////////////////////////////////////////////////
 
   getVersion(): string {
     return version
-  }
-
-  async fetchRegistry(): Promise<void> {
-    await getRegistry(this.config)
-    document.dispatchEvent(new CustomEvent('init-widget'))
-  }
-
-  getKeys(): string[] {
-    return Object.values(WidgetKeyEnum) as string[]
   }
 
   async getKeysENTPersonProfils(ENTPersonProfils: Array<string>): Promise<KeyENTPersonProfilsInfo> {
@@ -69,7 +71,7 @@ class WidgetAdapter {
 
       const userAllowedFnameOnCurrentUai: Array<string> = [WidgetKeyEnum.FAVORIS_PORTAIL]
 
-      getRegistryPortletsArray().forEach((value) => {
+      this.services?.forEach((value) => {
         userAllowedFnameOnCurrentUai.push(value.fname)
       })
 
@@ -101,33 +103,15 @@ class WidgetAdapter {
     const items = await this.getItems(key, soffit)
     const { name, link } = await this.getInfo(key)
     const subtitle = await this.getSubtitle(key, soffit)
-    const emptyDiscover = this.getEmptyDiscorver(key)
     const widgetData: Widget = {
       uid: key,
       name,
       subtitle,
       link,
-      emptyDiscover,
       items,
     }
 
     return widgetData
-  }
-
-  getEmptyDiscorver(key: string): boolean {
-    switch (key) {
-      default:
-        return false
-    }
-  }
-
-  async getSubtitle(key: string, soffit: string): Promise<string> {
-    switch (key) {
-      case WidgetKeyEnum.ESIDOC_PRETS:
-        return await getEsidocSubtitle(soffit)
-      default :
-        return ''
-    }
   }
 
   async getAllNames(ENTPersonProfils: Array<string>): Promise<Array<{ name: string, key: string }>> {
@@ -141,6 +125,17 @@ class WidgetAdapter {
       })
     }
     return names
+  }
+
+  /////////////////////////////////////////////////////////
+
+  async getSubtitle(key: string, soffit: string): Promise<string> {
+    switch (key) {
+      case WidgetKeyEnum.ESIDOC_PRETS:
+        return await getEsidocSubtitle(soffit)
+      default :
+        return ''
+    }
   }
 
   async getInfo(key: string): Promise<{ name: string, link?: Link }> {
@@ -182,7 +177,7 @@ class WidgetAdapter {
       case WidgetKeyEnum.FAVORIS_MEDIACENTRE:
         return await getFavorisMediacentre(soffit)
       case WidgetKeyEnum.FAVORIS_PORTAIL:
-        return await getFavorisPortail()
+        return await getFavorisPortail(this.services ?? [])
       case WidgetKeyEnum.ESIDOC_PRETS:
         return await getEsidocItems(soffit)
       default:
@@ -191,7 +186,7 @@ class WidgetAdapter {
   }
 }
 
-(async function init(): Promise<void> {
+(async function (): Promise<void> {
   const url = new URL(import.meta.url).searchParams.get('configUri')
   if (!url) {
     console.error('"configUri" is not defined')
@@ -206,8 +201,7 @@ class WidgetAdapter {
     if (!response.ok)
       throw new Error(response.statusText)
 
-    const config: Config = await response.json()
-    window.WidgetAdapter = new WidgetAdapter(config)
+    window.WidgetAdapter = new WidgetAdapter(await response.json())
   }
   // eslint-disable-next-line unused-imports/no-unused-vars
   catch (_: any) {
