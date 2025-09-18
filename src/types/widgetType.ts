@@ -50,4 +50,9 @@ export interface ProfilsConfig {
   defaultKeys: Array<string>
 }
 
-export type WidgetsWrapperConfig = Omit<ProfilsConfig, 'ENTPersonProfils'>
+export type WidgetsWrapperConfig = Omit<ProfilsConfig, 'ENTPersonProfils'> & {
+  names: {
+    name: string
+    key: string
+  }[]
+}

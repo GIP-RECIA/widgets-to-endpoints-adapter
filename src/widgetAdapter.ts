@@ -32,7 +32,9 @@ import 'regenerator-runtime/runtime.js'
 class WidgetAdapter {
   config: Config
 
-  services: Array<PortletFromRegistry> | undefined
+  services?: Array<PortletFromRegistry>
+
+  widgetWrapperConfig?: WidgetsWrapperConfig
 
   constructor(config: Config) {
     this.config = config
@@ -54,14 +56,15 @@ class WidgetAdapter {
   async getKeysENTPersonProfils(
     ENTPersonProfils: Array<string>,
   ): Promise<WidgetsWrapperConfig> {
-    return await ConfigService.getWidgetsWrapperConfig(
-      this.config.global.populationsKeysUri,
-      ENTPersonProfils.map(profil => profil.toLocaleLowerCase()),
-      [
-        WidgetKeyEnum.FAVORIS_PORTAIL,
-        ...(this.services?.map(s => s.fname) ?? []),
-      ],
-    )
+    if (!this.widgetWrapperConfig) {
+      this.widgetWrapperConfig = await ConfigService.getWidgetsWrapperConfig(
+        this.config.global.populationsKeysUri,
+        ENTPersonProfils.map(profil => profil.toLocaleLowerCase()),
+        this.services,
+      )
+    }
+
+    return this.widgetWrapperConfig
   }
 
   async getJsonForWidget(key: string, soffit: string): Promise<Widget> {
@@ -79,16 +82,11 @@ class WidgetAdapter {
     return widgetData
   }
 
-  async getAllNames(ENTPersonProfils: Array<string>): Promise<Array<{ name: string, key: string }>> {
-    const names: Array<{ name: string, key: string }> = []
-    const keys = await this.getKeysENTPersonProfils(ENTPersonProfils)
-    for (const allowedKey of keys.allowedKeys) {
-      const { name } = await this.getInfo(allowedKey)
-      names.push({
-        name,
-        key: allowedKey,
-      })
-    }
+  async getAllNames(
+    ENTPersonProfils: Array<string>,
+  ): Promise<Array<{ name: string, key: string }>> {
+    const { names } = await this.getKeysENTPersonProfils(ENTPersonProfils)
+
     return names
   }
 

@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-import type { ProfilsConfig, WidgetsWrapperConfig } from '../types/widgetType'
+import type { PortletFromRegistry } from '../types/registryTypes.ts'
+import type { ProfilsConfig, WidgetsWrapperConfig } from '../types/widgetType.ts'
+import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
 
 export class ConfigService {
   static async getWidgetsWrapperConfig(
     url: string,
     ENTPersonProfils: string[],
-    allowedFnames: string[],
+    services: Array<PortletFromRegistry> | undefined,
   ): Promise<WidgetsWrapperConfig> {
+    if (!services)
+      services = []
+
     try {
       ENTPersonProfils = ENTPersonProfils.map(profil => profil.toLocaleLowerCase())
 
@@ -55,10 +60,36 @@ export class ConfigService {
           },
         )
 
-      return {
+      const allowedFnames = [
+        WidgetKeyEnum.FAVORIS_PORTAIL,
+        ...services.map(service => service.fname),
+      ]
+
+      const filterdConfig = {
         allowedKeys: [...new Set(allowedKeys)].filter(key => allowedFnames.includes(key)),
         requiredKeys: [...new Set(requiredKeys)].filter(key => allowedFnames.includes(key)),
         defaultKeys: [...new Set(defaultKeys)].filter(key => allowedFnames.includes(key)),
+      }
+
+      const names = [
+        ...services
+          .filter(({ fname }) => filterdConfig.allowedKeys.includes(fname))
+          .map(({ title, fname }) => {
+            return {
+              name: title,
+              key: fname,
+            }
+          })
+          ?? [],
+        {
+          name: WidgetKeyEnum.FAVORIS_PORTAIL,
+          key: WidgetKeyEnum.FAVORIS_PORTAIL,
+        },
+      ]
+
+      return {
+        ...filterdConfig,
+        names,
       }
     }
     catch (error: any) {
