@@ -16,31 +16,28 @@
 
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { PublisherConfig } from '../types/configSubtypes/PublisherConfigType.ts'
-import type { Item } from '../types/Item.ts'
+import type { WidgetItem } from '../types/widgetType.ts'
 
-async function getDocumentsPublisher(soffit: string): Promise<string> {
-  const itemArrayResponse: Array<Item> = []
+async function getDocumentsPublisher(soffit: string): Promise<WidgetItem[]> {
+  const itemArrayResponse: Array<WidgetItem> = []
 
   const response = await getDocuments(getConfig().publisher.resourcesUri, soffit)
 
   for (let index = 0; index < response.length; index++) {
     const element = response[index]
-    const item: Item = {
+    const item: WidgetItem = {
+      id: element.article.guid,
       name: element.article.title,
-      link: '',
-      target: '',
-      rel: '',
       icon: '/images/portlet_icons/Documents.svg',
       event: getConfig().publisher.eventName ?? '',
       eventpayload: JSON.stringify({ uuid: element.uuid ?? '' }),
       eventDNMA: '',
-      eventpayloadDNMA: '',
-      id: element.article.guid,
+      eventDNMApayload: '',
     }
     itemArrayResponse.push(item)
   }
 
-  return JSON.stringify(itemArrayResponse)
+  return itemArrayResponse
 }
 
 async function getDocuments(url: string, soffit: string): Promise<any> {

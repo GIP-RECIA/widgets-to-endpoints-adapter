@@ -16,14 +16,13 @@
 
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { MediacentreConfig } from '../types/configSubtypes/MediacentreConfigType.ts'
-import type { Item } from '../types/Item.ts'
-import type { KeyValuePair } from '../types/KeyValuePair.ts'
+import type { WidgetItem } from '../types/widgetType.ts'
 // eslint-disable-next-line unicorn/prefer-node-protocol
 import { Buffer } from 'buffer'
 import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
 
-async function getFavorisMediacentre(soffit: string): Promise<string> {
-  const itemArrayResponse: Array<Item> = []
+async function getFavorisMediacentre(soffit: string): Promise<WidgetItem[]> {
+  const itemArrayResponse: Array<WidgetItem> = []
 
   const linkPattern: string = getConfig().mediacentre.redirectLinkPattern
   const groupArrayFiltered: Array<string> = []
@@ -51,7 +50,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
   )
 
   if (favorites === undefined || favorites.length === 0)
-    return JSON.stringify(itemArrayResponse)
+    return itemArrayResponse
 
   const response = await getFavoritesFromMediacentre(
     getConfig().mediacentre.apiFavorisUri,
@@ -71,25 +70,27 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
         const displayNameForRedirection: string = hasSpecialChar
           ? Buffer.from(displayName).toString('base64')
           : displayName
-        const link = linkPattern
+        const href = linkPattern
           .replace('{fname}', element.idRessource)
           .replace('{name}', displayNameForRedirection)
           .replace('{b64}', hasSpecialChar.toString())
 
-        const ressourceLightAsItem: Item = {
+        const ressourceLightAsItem: WidgetItem = {
+          id: element.idRessource,
           name: element.nomRessource,
-          link,
           icon: '/images/portlet_icons/Mediacentre.svg',
-          target: '_blank',
-          rel: 'noopener noreferrer',
+          link: {
+            href,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          },
           event: '',
           eventpayload: '',
           eventDNMA: 'click-portlet-card',
-          eventpayloadDNMA: JSON.stringify({
+          eventDNMApayload: JSON.stringify({
             fname: 'Mediacentre',
             SERVICE: element.typePresentation.code,
           }),
-          id: element.idRessource,
         }
         itemArrayResponse.push(ressourceLightAsItem)
       }
@@ -99,7 +100,7 @@ async function getFavorisMediacentre(soffit: string): Promise<string> {
     }
   }
 
-  return JSON.stringify(itemArrayResponse)
+  return itemArrayResponse
 }
 
 async function getFavoritesFromMediacentre(
@@ -176,7 +177,7 @@ async function getConfigFromMediacentre(
 
     const json = await response.json()
 
-    const groups: Map<string, KeyValuePair<string>> = json.configListMap.groups
+    const groups: Map<string, { key: string, value: string }> = json.configListMap.groups
     const regExpArray: Array<RegExp> = []
     groups.forEach((value, _key, _map) => {
       regExpArray.push(new RegExp(value.value))

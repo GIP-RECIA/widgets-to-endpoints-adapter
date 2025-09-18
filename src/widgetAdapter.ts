@@ -16,6 +16,8 @@
 
 import type { Config } from './types/ConfigType.ts'
 import type { KeyENTPersonProfilsInfo } from './types/KeyENTPersonProfilsInfoType.ts'
+import type { Link } from './types/linkType.ts'
+import type { Widget, WidgetItem } from './types/widgetType.ts'
 import { getDocumentsPublisher } from './services/documentsPublisherService.ts'
 import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
 import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
@@ -90,38 +92,26 @@ class WidgetAdapter {
     }
   }
 
-  async getJsonForWidget(key: string, soffit: string): Promise<string> {
+  async getJsonForWidget(key: string, soffit: string): Promise<Widget & { eventDNMA: any, eventpayloadDNMA: any }> {
     const items = await this.getItems(key, soffit)
-    const portletData = await this.getLink(key)
+    const { name, link } = await this.getInfo(key)
     const subtitle = await this.getSubtitle(key, soffit)
     const emptyText = this.getTextEmpty(key)
     const dnma = this.getDNMA(key)
     const emptyDiscover = this.getEmptyDiscorver(key)
-    const widgetData: {
-      name: string
-      subtitle: string
-      link: string
-      emptyText: string
-      emptyDiscover: boolean
-      items: string
-      target: string
-      rel: string
-      eventDNMA: string
-      eventpayloadDNMA: string
-    } = {
-      name: portletData.name,
+    const widgetData: Widget & { eventDNMA: any, eventpayloadDNMA: any } = {
+      uid: key,
+      name,
       subtitle,
-      link: portletData.link,
+      link,
       emptyText,
       emptyDiscover,
       items,
-      target: portletData.target,
-      rel: portletData.rel,
       eventDNMA: dnma.eventDNMA,
       eventpayloadDNMA: dnma.eventpayloadDNMA,
     }
 
-    return JSON.stringify(widgetData)
+    return widgetData
   }
 
   getEmptyDiscorver(key: string): boolean {
@@ -159,9 +149,9 @@ class WidgetAdapter {
     const names: Array<{ name: string, key: string }> = []
     const keys = await this.getKeysENTPersonProfils(ENTPersonProfils)
     for (const allowedKey of keys.allowedKeys) {
-      const portletData = await this.getLink(allowedKey)
+      const { name } = await this.getInfo(allowedKey)
       names.push({
-        name: portletData.name,
+        name,
         key: allowedKey,
       })
     }
@@ -181,18 +171,15 @@ class WidgetAdapter {
     }
   }
 
-  async getLink(key: string): Promise<{ name: string, link: string, target: string, rel: string }> {
+  async getInfo(key: string): Promise<{ name: string, link?: Link }> {
     if (key === WidgetKeyEnum.FAVORIS_PORTAIL) {
       return {
         name: 'Favoris',
-        link: '',
-        rel: '',
-        target: '',
       }
     }
-    const url = this.config.global.portletInfoUri.replace('{fname}', key)
+
     try {
-      const response = await fetch(url)
+      const response = await fetch(this.config.global.portletInfoUri.replace('{fname}', key))
 
       if (!response.ok)
         throw new Error(`Response status: ${response.status}`)
@@ -201,23 +188,22 @@ class WidgetAdapter {
 
       return {
         name: json.portlet.title ?? key,
-        link: portletFromApiService.getUrl(json.portlet),
-        target: portletFromApiService.getTarget(json.portlet),
-        rel: portletFromApiService.getRel(json.portlet),
+        link: {
+          href: portletFromApiService.getUrl(json.portlet),
+          target: portletFromApiService.getTarget(json.portlet),
+          rel: portletFromApiService.getRel(json.portlet),
+        },
       }
     }
     catch (error: any) {
       console.error(error.message)
       return {
         name: key,
-        link: '',
-        rel: '',
-        target: '',
       }
     }
   }
 
-  async getItems(key: string, soffit: string): Promise<string> {
+  async getItems(key: string, soffit: string): Promise<WidgetItem[]> {
     switch (key) {
       case WidgetKeyEnum.DOCUMENTS_PUBLISHER:
         return await getDocumentsPublisher(soffit)
@@ -228,7 +214,7 @@ class WidgetAdapter {
       case WidgetKeyEnum.ESIDOC_PRETS:
         return await getEsidocItems(soffit)
       default:
-        return ''
+        return []
     }
   }
 
@@ -255,7 +241,8 @@ class WidgetAdapter {
     const config: Config = await response.json()
     window.WidgetAdapter = new WidgetAdapter(config)
   }
-  catch (err) {
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  catch (_: any) {
     console.error('Unable to get config')
   }
 })()

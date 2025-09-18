@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-import type { Item } from '../types/Item'
+import type { FavorisConfig } from '../types/configSubtypes/FavorisConfigType.ts'
+import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
+import type { WidgetItem } from '../types/widgetType.ts'
 import { getRegistryPortletsArray } from './registryService.ts'
 import fetchFavorites from './utils/fetchFavorites.ts'
 import byFavoriteOrder from './utils/sortByFavoriteOrder.ts'
 
-async function getFavorisPortail(): Promise<string> {
+async function getFavorisPortail(): Promise<WidgetItem[]> {
   const favoritesTree = await fetchFavorites()
   const favorites = flattenFavorites(favoritesTree).map(f => f.fname)
   // registry portlet is fetched by the adapter before is it ready so the array is populated at this point
@@ -28,24 +30,26 @@ async function getFavorisPortail(): Promise<string> {
     .filter(portlet => favorites.includes(portlet.fname))
     .sort(byFavoriteOrder(favorites))
 
-  const ItemArray: Array<Item> = []
+  const ItemArray: Array<WidgetItem> = []
 
   favoritesSortedAndFiltered.forEach((value: any, _index: number) => {
-    const favoriteAsItem: Item = {
+    const favoriteAsItem: WidgetItem = {
+      id: value.fname,
       name: value.title,
-      link: getUrl(value),
       icon: value.parameters.iconUrl ? value.parameters.iconUrl.value : '',
-      target: getTarget(value),
-      rel: getRel(value),
+      link: {
+        href: getUrl(value),
+        target: getTarget(value),
+        rel: getRel(value),
+      },
       event: '',
       eventpayload: '',
       eventDNMA: 'click-portlet-card',
-      eventpayloadDNMA: JSON.stringify({ fname: value.fname }),
-      id: value.fname,
+      eventDNMApayload: JSON.stringify({ fname: value.fname }),
     }
     ItemArray.push(favoriteAsItem)
   })
-  return JSON.stringify(ItemArray)
+  return ItemArray
 }
 
 function flattenFavorites(elem: any): Array<any> {

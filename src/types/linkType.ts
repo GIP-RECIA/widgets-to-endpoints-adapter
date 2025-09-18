@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-export interface KeyValuePair<T> {
-  key: string
-  value: T
+export interface Link {
+  name?: string
+  href: string
+  target?: string
+  rel?: string
 }
