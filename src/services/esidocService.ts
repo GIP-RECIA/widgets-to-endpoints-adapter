@@ -17,7 +17,10 @@
 import type { EsidocConfig } from '../types/configSubtypes/EsidocConfigType.ts'
 import type { GlobalConfig } from '../types/configSubtypes/GlobalConfigType.ts'
 import type { WidgetItem } from '../types/widgetType.ts'
-import { faCalendarXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCalendarXmark,
+  // faMagnifyingGlass,
+} from '@fortawesome/free-solid-svg-icons'
 import { getIconWithStyle } from '../utils/fontawesomeUtils.ts'
 import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
 
@@ -42,17 +45,17 @@ async function getEsidocItems(soffit: string): Promise<WidgetItem[]> {
 
   const itemArrayResponse: WidgetItem[] = []
 
-  const buttonSearch: WidgetItem = {
-    id: 'search-button',
-    name: 'I18N$Rechercher$',
-    icon: getIconWithStyle(faMagnifyingGlass, [], ['icon']),
-    dispatchEvents: [
-      {
-        type: 'openSearchEsidoc',
-      },
-    ],
-  }
-  itemArrayResponse.push(buttonSearch)
+  // const buttonSearch: WidgetItem = {
+  //   id: 'search-button',
+  //   name: 'I18N$Rechercher$',
+  //   icon: getIconWithStyle(faMagnifyingGlass, [], ['icon']),
+  //   dispatchEvents: [
+  //     {
+  //       type: 'openSearchEsidoc',
+  //     },
+  //   ],
+  // }
+  // itemArrayResponse.push(buttonSearch)
   for (let index = 0; index < responseArray.length; index++) {
     const element = responseArray[index]
     try {
