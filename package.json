@@ -2,6 +2,7 @@
   "name": "@gip-recia/widgets-to-endpoints-adapter",
   "type": "module",
   "version": "1.0.2",
+  "packageManager": "yarn@4.9.4",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -45,6 +46,5 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "vite": "^7.1.6"
-  },
-  "packageManager": "yarn@4.9.4"
+  }
 }
