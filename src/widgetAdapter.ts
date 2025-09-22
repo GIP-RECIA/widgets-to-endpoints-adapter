@@ -15,7 +15,6 @@
  */
 
 import type { Config } from './types/ConfigType.ts'
-import type { Link } from './types/linkType.ts'
 import type { PortletFromRegistry } from './types/registryTypes.ts'
 import type { Widget, WidgetItem, WidgetsWrapperConfig } from './types/widgetType.ts'
 import { version } from '../package.json'
@@ -25,7 +24,6 @@ import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
 import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
 import { getFavorisPortail } from './services/favorisPortailService.ts'
 import PortletService from './services/portletService.ts'
-import { getServiceLink } from './utils/linkUtils.ts'
 import { WidgetKeyEnum } from './WidgetKeyEnum.ts'
 import 'regenerator-runtime/runtime.js'
 
@@ -53,7 +51,7 @@ class WidgetAdapter {
     return version
   }
 
-  async getKeysENTPersonProfils(
+  async getConfig(
     ENTPersonProfils: Array<string>,
   ): Promise<WidgetsWrapperConfig> {
     if (!this.widgetWrapperConfig) {
@@ -67,36 +65,17 @@ class WidgetAdapter {
     return this.widgetWrapperConfig
   }
 
-  async getJsonForWidget(key: string, soffit: string): Promise<Widget> {
-    const { name } = this.widgetWrapperConfig!.names.find(name => name.key === key)!
-    const portlet = this.services?.find(({ fname }) => fname === key)
-    const link: Link | undefined = portlet
-      ? getServiceLink(
-          this.config.global.context,
-          portlet.fname,
-          portlet.parameters.alternativeMaximizedLink as unknown as string | undefined,
-          portlet.parameters.alternativeMaximizedLinkTarget as unknown as string | undefined,
-        )
-      : undefined
+  async getWidget(key: string, soffit: string): Promise<Widget> {
+    const baseData = this.widgetWrapperConfig!.availableWidgets.find(({ uid }) => uid === key)!
     const subtitle = await this.getSubtitle(key, soffit)
     const items = await this.getItems(key, soffit)
     const widgetData: Widget = {
-      uid: key,
-      name,
+      ...baseData,
       subtitle,
-      link,
       items,
     }
 
     return widgetData
-  }
-
-  async getAllNames(
-    ENTPersonProfils: Array<string>,
-  ): Promise<Array<{ name: string, key: string }>> {
-    const { names } = await this.getKeysENTPersonProfils(ENTPersonProfils)
-
-    return names
   }
 
   /////////////////////////////////////////////////////////

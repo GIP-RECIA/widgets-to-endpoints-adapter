@@ -22,7 +22,7 @@ export interface Widget {
   subtitle?: string
   notifications?: number
   link?: Link
-  items?: Array<WidgetItem>
+  items?: WidgetItem[]
   emptyIcon?: string
   emptyText?: string
   emptyDiscover?: boolean
@@ -44,15 +44,12 @@ export interface WidgetItem {
 }
 
 export interface ProfilsConfig {
-  ENTPersonProfils: Array<string>
-  allowedKeys: Array<string>
-  requiredKeys: Array<string>
-  defaultKeys: Array<string>
+  ENTPersonProfils: string[]
+  allowedKeys: string[]
+  requiredKeys: string[]
+  defaultKeys: string[]
 }
 
 export type WidgetsWrapperConfig = Omit<ProfilsConfig, 'ENTPersonProfils'> & {
-  names: {
-    name: string
-    key: string
-  }[]
+  availableWidgets: Widget[]
 }

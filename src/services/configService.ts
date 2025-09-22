@@ -16,6 +16,7 @@
 
 import type { PortletFromRegistry } from '../types/registryTypes.ts'
 import type { ProfilsConfig, WidgetsWrapperConfig } from '../types/widgetType.ts'
+import { getServiceLink } from '../utils/linkUtils.ts'
 import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
 
 export class ConfigService {
@@ -71,25 +72,31 @@ export class ConfigService {
         defaultKeys: [...new Set(defaultKeys)].filter(key => allowedFnames.includes(key)),
       }
 
-      const names = [
+      const availableWidgets = [
         ...services
           .filter(({ fname }) => filterdConfig.allowedKeys.includes(fname))
-          .map(({ title, fname }) => {
+          .map((portlet) => {
             return {
-              name: title,
-              key: fname,
+              uid: portlet.fname,
+              name: portlet.title,
+              link: getServiceLink(
+                window.WidgetAdapter.config.global.context,
+                portlet.fname,
+                portlet.parameters?.alternativeMaximizedLink?.value as unknown as string | undefined,
+                portlet.parameters?.alternativeMaximizedLinkTarget?.value as unknown as string | undefined,
+              ),
             }
           })
           ?? [],
         {
+          uid: WidgetKeyEnum.FAVORIS_PORTAIL,
           name: WidgetKeyEnum.FAVORIS_PORTAIL,
-          key: WidgetKeyEnum.FAVORIS_PORTAIL,
         },
       ]
 
       return {
         ...filterdConfig,
-        names,
+        availableWidgets,
       }
     }
     catch (error: any) {
