@@ -15,20 +15,14 @@
  */
 
 import type { Config } from '../types/configTypes.ts'
-import type { EsidocApiResponse } from '../types/esidocTypes.ts'
+import type { PublisherApiResponse } from '../types/publisherTypes.ts'
 import type { Widget, WidgetItem } from '../types/widgetTypes.ts'
-import {
-  faCalendarXmark,
-  // faMagnifyingGlass,
-} from '@fortawesome/free-solid-svg-icons'
-import { WidgetKey } from '../types/widgetTypes.ts'
-import { getIconWithStyle } from '../utils/fontawesomeUtils.ts'
 
-async function get(
+async function getDocuments(
   url: string,
   soffit: string,
   timeout: number,
-): Promise<EsidocApiResponse> {
+): Promise<PublisherApiResponse> {
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -51,62 +45,40 @@ async function get(
 
 function getItems(
   config: Config,
-  response: EsidocApiResponse,
+  response: PublisherApiResponse,
 ): WidgetItem[] {
-  const items: WidgetItem[] = []
-  // const buttonSearch: WidgetItem = {
-  //   id: 'search-button',
-  //   name: 'I18N$Rechercher$',
-  //   icon: getIconWithStyle(faMagnifyingGlass, [], ['icon']),
-  //   dispatchEvents: [
-  //     {
-  //       type: 'openSearchEsidoc',
-  //     },
-  //   ],
-  // }
-  // items.push(buttonSearch)
-  items.push(...response.itemForResponseList.map((item) => {
+  return response.map((item) => {
     return {
-      id: item.permalien,
-      name: item.titre,
-      icon: item.retard
-        ? getIconWithStyle(faCalendarXmark, [], ['icon'])
-        : '',
-      link: {
-        href: `${config.global.context}/api/ExternalURLStats?fname=ESIDOC&service=${item.permalien}`,
-        target: '_blank',
-        rel: 'noopener noreferrer',
-      },
+      id: item.article.guid.toString(),
+      name: item.article.title,
+      icon: '/images/portlet_icons/Documents.svg',
       dispatchEvents: [
         {
-          type: 'click-portlet-card',
+          type: config.publisher.eventName ?? '',
           detail: {
-            fname: WidgetKey.ESIDOC,
+            uuid: item.uuid ?? '',
           },
         },
       ],
     }
-  }))
-
-  return items
+  })
 }
 
-async function getEsidocWidget(
+async function getDocumentsWidget(
   config: Config,
   soffit: string,
 ): Promise<Partial<Widget>> {
-  const response = await get(
-    config.esidoc.apiUri,
+  const response = await getDocuments(
+    config.publisher.resourcesUri,
     soffit,
     config.global.timeout,
   )
 
   return {
-    subtitle: `I18N$CacheUpdate$${new Date(response.lastUpdateInstant).toLocaleTimeString()}`,
     items: getItems(config, response),
   }
 }
 
 export {
-  getEsidocWidget,
+  getDocumentsWidget,
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import type { Config } from './types/ConfigType.ts'
+import type { Config } from './types/configTypes.ts'
 import type { PortletFromRegistry } from './types/registryTypes.ts'
-import type { Widget, WidgetItem, WidgetsWrapperConfig } from './types/widgetType.ts'
+import type { Widget, WidgetsWrapperConfig } from './types/widgetTypes.ts'
 import { version } from '../package.json'
 import { ConfigService } from './services/configService.ts'
-import { getDocumentsPublisher } from './services/documentsPublisherService.ts'
-import { getEsidocItems, getEsidocSubtitle } from './services/esidocService.ts'
-import { getFavorisMediacentre } from './services/favorisMediacentreService.ts'
-import { getFavorisPortail } from './services/favorisPortailService.ts'
+import { getDocumentsWidget } from './services/documentsService.ts'
+import { getEsidocWidget } from './services/esidocService.ts'
+import { getFavoriteWidget } from './services/favoriteService.ts'
+import { getMediacentreWidget } from './services/mediacentreService.ts'
 import PortletService from './services/portletService.ts'
-import { WidgetKeyEnum } from './WidgetKeyEnum.ts'
+import { WidgetKey } from './types/widgetTypes.ts'
 import 'regenerator-runtime/runtime.js'
 
 class WidgetAdapter {
@@ -33,6 +33,13 @@ class WidgetAdapter {
   services?: Array<PortletFromRegistry>
 
   widgetWrapperConfig?: WidgetsWrapperConfig
+
+  widgetHandlers: Record<string, (soffit: string) => Promise<Partial<Widget>>> = {
+    [WidgetKey.FAVORITE]: _ => getFavoriteWidget(this.config, this.services),
+    [WidgetKey.MEDIACENTRE]: soffit => getMediacentreWidget(this.config, soffit),
+    [WidgetKey.DOCUMENTS]: soffit => getDocumentsWidget(this.config, soffit),
+    [WidgetKey.ESIDOC]: soffit => getEsidocWidget(this.config, soffit),
+  }
 
   constructor(config: Config) {
     this.config = config
@@ -44,8 +51,6 @@ class WidgetAdapter {
     if (this.services)
       document.dispatchEvent(new CustomEvent('init-widget'))
   }
-
-  /////////////////////////////////////////////////////////
 
   getVersion(): string {
     return version
@@ -67,41 +72,13 @@ class WidgetAdapter {
 
   async getWidget(key: string, soffit: string): Promise<Widget> {
     const baseData = this.widgetWrapperConfig!.availableWidgets.find(({ uid }) => uid === key)!
-    const subtitle = await this.getSubtitle(key, soffit)
-    const items = await this.getItems(key, soffit)
+    const complementaryData = await this.widgetHandlers[key](soffit)
     const widgetData: Widget = {
       ...baseData,
-      subtitle,
-      items,
+      ...complementaryData,
     }
 
     return widgetData
-  }
-
-  /////////////////////////////////////////////////////////
-
-  async getSubtitle(key: string, soffit: string): Promise<string> {
-    switch (key) {
-      case WidgetKeyEnum.ESIDOC_PRETS:
-        return await getEsidocSubtitle(soffit)
-      default :
-        return ''
-    }
-  }
-
-  async getItems(key: string, soffit: string): Promise<WidgetItem[]> {
-    switch (key) {
-      case WidgetKeyEnum.DOCUMENTS_PUBLISHER:
-        return await getDocumentsPublisher(soffit)
-      case WidgetKeyEnum.FAVORIS_MEDIACENTRE:
-        return await getFavorisMediacentre(soffit)
-      case WidgetKeyEnum.FAVORIS_PORTAIL:
-        return await getFavorisPortail(this.services ?? [])
-      case WidgetKeyEnum.ESIDOC_PRETS:
-        return await getEsidocItems(soffit)
-      default:
-        return []
-    }
   }
 }
 

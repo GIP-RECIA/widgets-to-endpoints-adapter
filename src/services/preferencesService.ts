@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 
-export interface EsidocConfig {
-  apiUri: string
+export default class PreferencesService {
+  static async get(
+    url: string,
+    timeout: number,
+  ): Promise<Record<string, any>> {
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: AbortSignal.timeout(timeout),
+      })
+
+      if (!response.ok)
+        throw new Error(response.statusText)
+
+      return await response.json()
+    }
+    catch (error) {
+      console.error(error, url)
+      throw error
+    }
+  }
 }

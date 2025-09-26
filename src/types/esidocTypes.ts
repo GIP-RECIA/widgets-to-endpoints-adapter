@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
-export interface FavorisConfig {
-  favorisUri: string
+export interface EsidocApiResponse {
+  itemForResponseList: ItemForResponseList[]
+  lastUpdateInstant: string
+}
+
+export interface ItemForResponseList {
+  permalien: string
+  titre: string
+  dateRetour: string
+  retard: boolean
 }

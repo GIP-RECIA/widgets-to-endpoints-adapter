@@ -15,9 +15,9 @@
  */
 
 import type { PortletFromRegistry } from '../types/registryTypes.ts'
-import type { ProfilsConfig, WidgetsWrapperConfig } from '../types/widgetType.ts'
+import type { ProfilsConfig, WidgetsWrapperConfig } from '../types/widgetTypes.ts'
+import { WidgetKey } from '../types/widgetTypes.ts'
 import { getServiceLink } from '../utils/linkUtils.ts'
-import { WidgetKeyEnum } from '../WidgetKeyEnum.ts'
 
 export class ConfigService {
   static async getWidgetsWrapperConfig(
@@ -62,7 +62,7 @@ export class ConfigService {
         )
 
       const allowedFnames = [
-        WidgetKeyEnum.FAVORIS_PORTAIL,
+        WidgetKey.FAVORITE,
         ...services.map(service => service.fname),
       ]
 
@@ -89,8 +89,8 @@ export class ConfigService {
           })
           ?? [],
         {
-          uid: WidgetKeyEnum.FAVORIS_PORTAIL,
-          name: WidgetKeyEnum.FAVORIS_PORTAIL,
+          uid: WidgetKey.FAVORITE,
+          name: WidgetKey.FAVORITE,
         },
       ]
 

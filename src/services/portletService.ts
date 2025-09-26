@@ -44,8 +44,8 @@ export default class PortletService {
 
       return PortletService.portletRegistryToArray(data)
     }
-    catch (err) {
-      console.error(err, portletApiUrl)
+    catch (error) {
+      console.error(error, portletApiUrl)
       return undefined
     }
   }

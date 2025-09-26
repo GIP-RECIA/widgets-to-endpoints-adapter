@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-export default function (array: Array<any>) {
-  return function (a: any, b: any) {
-    return array.indexOf(a.fname) - array.indexOf(b.fname)
-  }
+export interface GroupsApiResponse {
+  groups: Group[]
+}
+
+export interface Group {
+  entityType: string
+  id: string
+  name: string
+  creatorId?: string
+  description: string
+  principal: Principal
+  children: any[]
+  childrenInitialized: boolean
+}
+
+export interface Principal {
+  key: string
+  name: string
 }

@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-export interface PublisherConfig {
-  resourcesUri: string
-  eventName: string
-}
+export type Config = {
+  global: {
+    timeout: number
+    populationsKeysUri: string
+    portletInfoUri: string
+    context: string
+    portletRegistryUri: string
+  }
+} & Record<string, Record<string, any>>

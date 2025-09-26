@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-import type { EsidocConfig } from './configSubtypes/EsidocConfigType.ts'
-import type { FavorisConfig } from './configSubtypes/FavorisConfigType.ts'
-import type { GlobalConfig } from './configSubtypes/GlobalConfigType.ts'
-import type { MediacentreConfig } from './configSubtypes/MediacentreConfigType.ts'
-import type { PublisherConfig } from './configSubtypes/PublisherConfigType.ts'
+export type MediacentreApiResponse = MediacentreRessource[]
 
-export interface Config {
-  esidoc: EsidocConfig
-  favoris: FavorisConfig
-  global: GlobalConfig
-  mediacentre: MediacentreConfig
-  publisher: PublisherConfig
+export interface MediacentreRessource {
+  idRessource: string
+  nomRessource: string
+  typePresentation: TypePresentation
+}
+
+export interface TypePresentation {
+  code: string
+  nom: string
+}
+
+export interface MediacentreConfigApiResponse {
+  configListMap: ConfigListMap
+}
+
+export interface ConfigListMap {
+  groups: Group[]
+}
+
+export interface Group {
+  key: string
+  value: string
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import type { Link } from './linkType.ts'
+import type { Link } from './linkTypes.ts'
 
 export interface Widget {
   uid: string
@@ -52,4 +52,11 @@ export interface ProfilsConfig {
 
 export type WidgetsWrapperConfig = Omit<ProfilsConfig, 'ENTPersonProfils'> & {
   availableWidgets: Widget[]
+}
+
+export enum WidgetKey {
+  FAVORITE = 'Favoris',
+  MEDIACENTRE = 'Mediacentre',
+  DOCUMENTS = 'Documents',
+  ESIDOC = 'MonCDI',
 }

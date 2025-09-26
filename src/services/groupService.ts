@@ -14,25 +14,31 @@
  * limitations under the License.
  */
 
-import type { Link } from '../types/linkTypes.ts'
+import type { GroupsApiResponse } from '../types/groupsTypes'
 
-function getServiceLink(
-  context: string,
-  fname: string,
-  alternativeMaximizedLink: string | undefined,
-  alternativeMaximizedLinkTarget: string | undefined,
-): Link {
-  return {
-    href: alternativeMaximizedLink || `${context}/p/${fname}`,
-    target: alternativeMaximizedLink
-      ? (alternativeMaximizedLinkTarget ?? '_blank')
-      : '_self',
-    rel: alternativeMaximizedLink
-      ? 'noopener noreferrer'
-      : undefined,
+export default class GroupService {
+  static async get(
+    url: string,
+    soffit: string,
+    timeout: number,
+  ): Promise<GroupsApiResponse> {
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: AbortSignal.timeout(timeout),
+        headers: {
+          Authorization: `Bearer ${soffit}`,
+        },
+      })
+
+      if (!response.ok)
+        throw new Error(response.statusText)
+
+      return await response.json()
+    }
+    catch (error) {
+      console.error(error, url)
+      throw error
+    }
   }
-}
-
-export {
-  getServiceLink,
 }
