@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.0](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/compare/widgets-to-endpoints-adapter/v1.0.2...widgets-to-endpoints-adapter/v2.0.0) (2025-09-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* use widgetHandlers for getting complementary widget information
+* return available widgets in config
+* remove unnecessary empty text
+* change item event system
+* remove unnecessary json transformation
+
+### Features
+
+* change item event system ([910d51c](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/910d51c1d43a2f9f6a9f1b23e6ce64df886bfb15))
+* disable e-sidoc search button ([f288cff](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/f288cff7e9d60f25f8fe3fb5d749eff92e211a89))
+* new esidoc presentation ([f2ceb7f](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/f2ceb7f463a018b8777fa7c62be8b6a5d6f2a94c))
+* remove unnecessary empty text ([ffdd183](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/ffdd1834d36a201a9019a923dea70627b790e1c1))
+* remove unnecessary json transformation ([adf844f](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/adf844f8b28b8d19c6c8b561f7f18f4df863281b))
+* return available widgets in config ([9e55584](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/9e555849f3664f54dc1111f908a020726bc483e3))
+* use fontawsome ([2928b69](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/2928b6943517e55caf98ce15a77cc2f04fbf828e))
+* use same portlet service as header widget (except soffit) ([87e8329](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/87e8329e53473a7a7193e537094585a4f2c9cfb9))
+* use widgetHandlers for getting complementary widget information ([e328ccc](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/e328cccd7c509eecde42f64ab20764435e9d9f95))
+
+
+### Bug Fixes
+
+* introduced bug due to refactor ([b623c3d](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/b623c3d04a357073e6bc63ca851e42a1a30aa12e))
+
 ## [1.0.2](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/compare/widgets-to-endpoints-adapter/v1.0.1...widgets-to-endpoints-adapter/v1.0.2) (2025-08-27)
 
 
