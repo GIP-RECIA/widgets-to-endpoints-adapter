@@ -18,7 +18,8 @@ import type { Config } from '../types/configTypes.ts'
 import type { EsidocApiResponse } from '../types/esidocTypes.ts'
 import type { Widget, WidgetItem } from '../types/widgetTypes.ts'
 import {
-  faCalendarXmark,
+  faExclamationTriangle,
+  faHourglassHalf,
   // faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { WidgetKey } from '../types/widgetTypes.ts'
@@ -68,10 +69,11 @@ function getItems(
   items.push(...response.itemForResponseList.map((item) => {
     return {
       id: item.permalien,
-      name: item.titre,
+      name: `${item.titre}`,
+      description: `I18N$returnDate$${new Date(item.dateRetour).toLocaleDateString()}`,
       icon: item.retard
-        ? getIconWithStyle(faCalendarXmark, [], ['icon'])
-        : '',
+        ? getIconWithStyle(faExclamationTriangle, [], ['icon', 'warn'])
+        : getIconWithStyle(faHourglassHalf, [], ['icon']),
       link: {
         href: `${config.global.context}/api/ExternalURLStats?fname=ESIDOC&service=${item.permalien}`,
         target: '_blank',
@@ -102,7 +104,10 @@ async function getEsidocWidget(
   )
 
   return {
-    subtitle: `I18N$CacheUpdate$${new Date(response.lastUpdateInstant).toLocaleTimeString()}`,
+    subtitle: response.itemForResponseList.length === 0
+      ? undefined
+      : `I18N$loan${response.itemForResponseList.length > 1 ? 's' : ''}$${response.itemForResponseList.length}`,
+    notifications: response.itemForResponseList.filter(({ retard }) => retard).length,
     items: getItems(config, response),
   }
 }
