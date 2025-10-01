@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.1](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/compare/widgets-to-endpoints-adapter/v2.0.0...widgets-to-endpoints-adapter/v2.0.1) (2025-10-01)
+
+
+### Bug Fixes
+
+* favorite order ([180bf85](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/commit/180bf8508ae76bb81fa9480cffee34a61ea9149d))
+
 ## [2.0.0](https://github.com/GIP-RECIA/widgets-to-endpoints-adapter/compare/widgets-to-endpoints-adapter/v1.0.2...widgets-to-endpoints-adapter/v2.0.0) (2025-09-29)
 
 
