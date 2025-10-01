@@ -74,8 +74,9 @@ function getItems(
   services: PortletFromRegistry[],
   favoriteIds: number[],
 ): WidgetItem[] {
-  return services
-    .filter(({ id }) => favoriteIds.includes(id))
+  return favoriteIds
+    .map(id => services.find(service => service.id === id))
+    .filter(service => service !== undefined)
     .map((portlet) => {
       return {
         id: portlet.fname,
