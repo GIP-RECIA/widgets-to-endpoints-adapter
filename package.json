@@ -39,7 +39,7 @@
     "@uportal/open-id-connect": "^1.40.2",
     "commit-and-tag-version": "^12.6.0",
     "dotenv-checker": "^1.1.7",
-    "eslint": "^9.36.0",
+    "eslint": "^9.37.0",
     "eslint-plugin-format": "^1.0.2",
     "husky": "^9.1.7",
     "json-server": "^1.0.0-beta.3",
