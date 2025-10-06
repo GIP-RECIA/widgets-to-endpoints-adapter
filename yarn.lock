@@ -787,6 +787,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-common-types@npm:7.1.0":
+  version: 7.1.0
+  resolution: "@fortawesome/fontawesome-common-types@npm:7.1.0"
+  checksum: 10/cf13595f54a7cb3e1e123032a2b34b939bacac300db25faa972da391b1bba7129beb1f929d6866a4b2aa28ac75b20a10a2b1a04e977c0948eceb5ff4c888663e
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-svg-core@npm:^6.7.2":
   version: 6.7.2
   resolution: "@fortawesome/fontawesome-svg-core@npm:6.7.2"
@@ -796,12 +803,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/free-regular-svg-icons@npm:^6.7.2":
-  version: 6.7.2
-  resolution: "@fortawesome/free-regular-svg-icons@npm:6.7.2"
+"@fortawesome/free-regular-svg-icons@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@fortawesome/free-regular-svg-icons@npm:7.1.0"
   dependencies:
-    "@fortawesome/fontawesome-common-types": "npm:6.7.2"
-  checksum: 10/f4385f19f04c07447c71943b2ae624d5b63e58d3f62583a12f75417e6e3e108a4df0d1466127c2c3f9fc2d7d68e3a6634c45b212ddf244721cb7461ba34c0f95
+    "@fortawesome/fontawesome-common-types": "npm:7.1.0"
+  checksum: 10/12b6101077d3dd3531cd04b16f8b5104eada6a886f77482b8ccf10744bd369d2a92f1dda34b386d46709cdda8eed2dc55f9d200780404897be334baa57e97397
   languageName: node
   linkType: hard
 
@@ -822,7 +829,7 @@ __metadata:
     "@commitlint/cli": "npm:^20.1.0"
     "@commitlint/config-conventional": "npm:^20.0.0"
     "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
-    "@fortawesome/free-regular-svg-icons": "npm:^6.7.2"
+    "@fortawesome/free-regular-svg-icons": "npm:^7.1.0"
     "@fortawesome/free-solid-svg-icons": "npm:^6.7.2"
     "@tsconfig/node22": "npm:^22.0.2"
     "@types/lodash-es": "npm:^4"
