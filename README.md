@@ -1,5 +1,7 @@
 # widget-to-endpoints-adapter
 
+> ⚠️ Migration du projet vers [recia-ui](https://github.com/GIP-RECIA/recia-ui/tree/main/packages/widgets-adapter)
+
 Nécessaire au fonctionnement du composant web [widgets-wrapper](https://github.com/GIP-RECIA/recia-ui/tree/main/packages/webcomponents/widgets-wrapper).
 
 ## Ajout d'un widget
