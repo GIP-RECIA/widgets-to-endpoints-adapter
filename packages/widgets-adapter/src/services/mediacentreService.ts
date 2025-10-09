@@ -15,11 +15,13 @@
  */
 
 import type { Config } from '../types/configTypes.ts'
-import type { MediacentreApiResponse, MediacentreConfigApiResponse } from '../types/mediacentreTypes.ts'
+import type {
+  MediacentreApiResponse,
+  MediacentreConfigApiResponse,
+} from '../types/mediacentreTypes.ts'
 import type { Widget, WidgetItem } from '../types/widgetTypes.ts'
-// eslint-disable-next-line unicorn/prefer-node-protocol
-import { Buffer } from 'buffer'
 import { WidgetKey } from '../types/widgetTypes.ts'
+import { toBase64 } from '../utils/encodeUtils.ts'
 import GroupService from './groupService.ts'
 import PreferencesService from './preferencesService.ts'
 
@@ -88,7 +90,7 @@ function getItems(
     const displayName: string = item.nomRessource
     const hasSpecialChar: boolean = displayName.match(/[^A-Z1-9]+/i) != null
     const displayNameForRedirection: string = hasSpecialChar
-      ? Buffer.from(item.nomRessource).toString('base64')
+      ? toBase64(displayName)
       : displayName
     const href = config.mediacentre.redirectLinkPattern
       .replace('{fname}', item.idRessource)

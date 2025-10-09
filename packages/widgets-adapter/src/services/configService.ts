@@ -15,7 +15,10 @@
  */
 
 import type { PortletFromRegistry } from '../types/registryTypes.ts'
-import type { ProfilsConfig, WidgetsWrapperConfig } from '../types/widgetTypes.ts'
+import type {
+  ProfilsConfig,
+  WidgetsWrapperConfig,
+} from '../types/widgetTypes.ts'
 import { WidgetKey } from '../types/widgetTypes.ts'
 import { getServiceLink } from '../utils/linkUtils.ts'
 

@@ -15,7 +15,11 @@
  */
 
 import type { Config } from '../types/configTypes.ts'
-import type { FavoriteContent, FavoriteLayout, LayoutApiResponse } from '../types/layoutTypes.ts'
+import type {
+  FavoriteContent,
+  FavoriteLayout,
+  LayoutApiResponse,
+} from '../types/layoutTypes.ts'
 import type { PortletFromRegistry } from '../types/registryTypes.ts'
 import type { Widget, WidgetItem } from '../types/widgetTypes.ts'
 import { getServiceLink } from '../utils/linkUtils.ts'
